@@ -1,7 +1,5 @@
-
-import './App.css'
 import {useLocalStorage} from "./hooks/useLocalStorage.js";
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import {useAutoReset} from "./hooks/useAutoReset.js";
 import InstallPrompt from "./components/InstallPrompt.jsx";
 import Header from "./components/Header.jsx";
@@ -9,6 +7,7 @@ import SettingsPanel from "./components/SettingsPanel.jsx";
 import AddItemForm from "./components/AddItemForm.jsx";
 import ShoppingList from "./components/ShoppingList.jsx";
 import InfoFooter from "./components/InfoFooter.jsx";
+import './App.css'
 
 const initialItems = [
     { id: 1, name: 'Proteinmilch', amount: '1L', checked: false },
@@ -32,9 +31,13 @@ function App() {
 
     // Toggle item checked status (manual reset/check individual items)
     const toggleItem = (id) => {
-        setItems(prev => prev.map(item =>
+        setItems(prev => {
+            const updatedItems = prev.map(item =>
             item.id === id ? { ...item, checked: !item.checked } : item
-        ))
+            )
+            console.log('Items updated:', updatedItems)
+            return updatedItems
+        })
     }
 
     const addItem = (name, amount) => {
@@ -55,11 +58,9 @@ function App() {
 
     const editItem = (id, newName, newAmount) => {
         setItems(prev => prev.map(item =>
-        item.id === id
-        ? { ...item,
-                name: newName.trim(),
-                amount: newAmount.trim() || '1 Stück'}
-            : item
+            item.id === id
+                ? { ...item, name: newName.trim(), amount: newAmount.trim() || '1 Stück' }
+                : item
         ))
     }
 
@@ -68,17 +69,27 @@ function App() {
         setLastResetDate(new Date().toDateString())
     }
 
-    const getNextResetDate = () => {
+    const nextResetDate = useMemo(() => {
         const today = new Date()
         const daysUntilReset = (resetDay - today.getDay + 7) % 7
         const nextReset = new Date(today)
         nextReset.setDate(today.getDate() + (daysUntilReset || 7))
         return nextReset.toLocaleDateString('de-DE')
-    }
+    }, [resetDay])
 
-    const checkedCount = items.filter(item => item.checked).length
-    const totalCount = items.length
-    const progress = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0
+    const { checkedCount, totalCount, progress } = useMemo(() => {
+        const checked = items.filter(item => item.checked).length
+        const total = items.length
+        const progressPercent = total > 0 ? (checked / total) * 100 : 0
+
+        console.log('Progress calculated:', { checked, total, progressPercent })
+
+        return {
+            checkedCount: checked,
+            totalCount: total,
+            progress: progressPercent
+        }
+    }, [items])
 
     return (
         <div className="app">
@@ -96,7 +107,7 @@ function App() {
                     autoReset={autoReset}
                     resetDay={resetDay}
                     weekDays={weekDays}
-                    nextResetDate={getNextResetDate()}
+                    nextResetDate={nextResetDate}
                     onAutoResetChange={setAutoReset}
                     onResetDayChange={setResetDay}
                     onManualReset={resetList}

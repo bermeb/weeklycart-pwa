@@ -2,6 +2,8 @@ import React from 'react'
 import {Settings, Check, Sparkles} from 'lucide-react'
 
 const Header = ({ progress, checkedCount, totalCount, onSettingsClick }) => {
+    console.log('Header received:', { progress, checkedCount, totalCount })
+
     return (
         <div className="header">
             <div className="header-content">
@@ -22,8 +24,11 @@ const Header = ({ progress, checkedCount, totalCount, onSettingsClick }) => {
                     </div>
                     <div className="progress-bar">
                         <div
-                            className="progess-fill"
-                            style={{ width: `${progress}%` }}
+                            className="progress-fill"
+                            style={{
+                                width: `${Math.max(0, Math.min(100, progress || 0))}%`,
+                                transition: 'width 0.5s ease'
+                            }}
                         />
                     </div>
                     {progress === 100 && totalCount > 0 && (

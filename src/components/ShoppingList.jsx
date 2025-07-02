@@ -32,6 +32,12 @@ const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
         }
     }
 
+    const handleToggle = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        onToggle(item.id)
+    }
+
     if (isEditing) {
         return (
             <div className="list-item editing">
@@ -84,19 +90,22 @@ const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
         <div
             className={`list-item ${item.checked ? 'checked' : ''} ${item.checked ? 'completed' : ''}`}
         >
-            <div className="item-content" onClick={() => onToggle(item.id)}>
-                <label className="checkbox-container">
+            <div className="item-content">
+                <label className="checkbox-container" onClick={handleToggle}>
                     <input
                         type="checkbox"
                         checked={item.checked}
-                        onChange={() => onToggle(item.id)}
+                        onChange={handleToggle}
                         className="checkbox-input"
                     />
                     <span className="checkbox-custom">
             {item.checked && <Check size={14} />}
           </span>
                 </label>
-                <div className="item-text">
+                <div
+                    className="item-text"
+                    onClick={handleToggle}
+                    style={{ cursor: 'pointer' }}>
                     <span className="item-name">{item.name}</span>
                     <span className="item-amount">{item.amount || '1 Stück'}</span>
                 </div>
