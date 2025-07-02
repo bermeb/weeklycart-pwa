@@ -69,14 +69,6 @@ function App() {
         setLastResetDate(new Date().toDateString())
     }
 
-    const nextResetDate = useMemo(() => {
-        const today = new Date()
-        const daysUntilReset = (resetDay - today.getDay + 7) % 7
-        const nextReset = new Date(today)
-        nextReset.setDate(today.getDate() + (daysUntilReset || 7))
-        return nextReset.toLocaleDateString('de-DE')
-    }, [resetDay])
-
     const { checkedCount, totalCount, progress } = useMemo(() => {
         const checked = items.filter(item => item.checked).length
         const total = items.length
@@ -107,7 +99,6 @@ function App() {
                     autoReset={autoReset}
                     resetDay={resetDay}
                     weekDays={weekDays}
-                    nextResetDate={nextResetDate}
                     onAutoResetChange={setAutoReset}
                     onResetDayChange={setResetDay}
                     onManualReset={resetList}

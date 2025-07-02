@@ -5,7 +5,6 @@ const SettingsPanel = ({
     autoReset,
     resetDay,
     weekDays,
-    nextResetDate,
     onAutoResetChange,
     onResetDayChange,
     onManualReset
@@ -48,18 +47,6 @@ const SettingsPanel = ({
                     ))}
                 </select>
             </div>
-
-            {autoReset && (
-                <div className="next-reset-card">
-                    <div className="next-reset-icon">
-                        <Calendar size={24}/>
-                    </div>
-                    <div className="next-reset-content">
-                        <span className="next-reset-label">Nächster Reset</span>
-                        <span className="next-reset-date">{nextResetDate}</span>
-                    </div>
-                </div>
-            )}
 
             <button onClick={onManualReset} className="reset-btn" aria-label="Liste jetzt zurücksetzten">
                 <RefreshCw size={16}/>
