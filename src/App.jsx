@@ -20,7 +20,7 @@ const weekDays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Sa
 function App() {
     const [items, setItems] = useLocalStorage('shoppingItems', initialItems)
     const [autoReset, setAutoReset] = useLocalStorage('autoReset', true)
-    const [resetDay, setResetDay] = useLocalStorage('resetDay', 6) // Samstag
+    const [resetDay, setResetDay] = useLocalStorage('resetDay', 5) // Samstag
     const [lastResetDate, setLastResetDate] = useLocalStorage('lastResetDate', new Date().toDateString())
     const [showSettings, setShowSettings] = useState( false)
 
