@@ -22,8 +22,13 @@ const InstallPrompt = () => {
     const handleInstall = async () => {
         if (!deferredPrompt) return
 
-        deferredPrompt.prompt()
-        await deferredPrompt.userChoice
+        try {
+            deferredPrompt.prompt()
+
+            await deferredPrompt.userChoice
+        } catch (error) {
+            console.log('Install prompt error:', error)
+        }
 
         setDeferredPrompt(null)
         setShowPrompt(false)
