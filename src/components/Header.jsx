@@ -1,5 +1,5 @@
 import React from 'react'
-import { Settings, Check} from 'lucide-react'
+import {Settings, Check, Sparkles} from 'lucide-react'
 
 const Header = ({ progress, checkedCount, totalCount, onSettingsClick }) => {
     return (
@@ -23,8 +23,16 @@ const Header = ({ progress, checkedCount, totalCount, onSettingsClick }) => {
                     <div className="progress-bar">
                         <div
                             className="progess-fill"
-                            style={{ width: `${progress}%` }}/>
+                            style={{ width: `${progress}%` }}
+                        />
                     </div>
+                    {progress === 100 && totalCount > 0 && (
+                        <div className="complete-badge">
+                            <Check size={16} />
+                            <span>Alles eingekauft!</span>
+                            <Sparkles size={16} />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
