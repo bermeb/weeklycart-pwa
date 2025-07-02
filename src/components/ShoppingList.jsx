@@ -1,6 +1,5 @@
-import {useState} from "react";
-import {CheckCircle, Clipboard, ClipboardList, Edit3, ShoppingCart, Trash2} from "lucide-react";
-
+import React, { useState } from 'react'
+import { Check, Trash2, ShoppingCart, Edit3, Save, X, ClipboardList, CheckCircle } from 'lucide-react'
 
 const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
     const [isEditing, setIsEditing] = useState(false)
@@ -33,19 +32,19 @@ const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
         }
     }
 
-    if(isEditing) {
+    if (isEditing) {
         return (
             <div className="list-item editing">
                 <div className="item-content">
                     <div className="checkbox disabled">
-                        <Check size={16} color="#d1d5db"/>
+                        <Check size={16} color="#d1d5db" />
                     </div>
                     <div className="edit-inputs">
                         <input
                             type="text"
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
-                            onKeyPress={handleKeyPress}
+                            onKeyDown={handleKeyPress}
                             className="edit-input edit-name"
                             placeholder="Artikel..."
                             maxLength={30}
@@ -55,7 +54,7 @@ const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
                             type="text"
                             value={editAmount}
                             onChange={(e) => setEditAmount(e.target.value)}
-                            onKeyPress={handleKeyPress}
+                            onKeyDown={handleKeyPress}
                             className="edit-input edit-amount"
                             placeholder="Menge..."
                             maxLength={15}
@@ -83,11 +82,20 @@ const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
 
     return (
         <div
-            className={`list item ${item.checked ? 'checked' : ''} ${item.checked ? 'completed' : ''}`}>
+            className={`list-item ${item.checked ? 'checked' : ''} ${item.checked ? 'completed' : ''}`}
+        >
             <div className="item-content" onClick={() => onToggle(item.id)}>
-                <div className={`checkbox ${item.checked ? 'checked' : ''}`}>
-                    {item.checked && <Check size={16} />}
-                </div>
+                <label className="checkbox-container">
+                    <input
+                        type="checkbox"
+                        checked={item.checked}
+                        onChange={() => onToggle(item.id)}
+                        className="checkbox-input"
+                    />
+                    <span className="checkbox-custom">
+            {item.checked && <Check size={14} />}
+          </span>
+                </label>
                 <div className="item-text">
                     <span className="item-name">{item.name}</span>
                     <span className="item-amount">{item.amount || '1 Stück'}</span>
@@ -97,7 +105,10 @@ const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
             <div className="item-actions">
                 {!item.checked && (
                     <button
-                        onClick={handleEdit}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleEdit()
+                        }}
                         className="edit-btn"
                         aria-label="Artikel bearbeiten">
                         <Edit3 size={16} />

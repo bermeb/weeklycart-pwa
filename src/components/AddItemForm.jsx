@@ -1,6 +1,5 @@
-import {useRef, useState} from "react";
-import {Plane, Plus, ShoppingCart} from "lucide-react";
-
+import React, { useState, useRef } from 'react'
+import { Plus, ShoppingCart } from 'lucide-react'
 
 const quickUnits = ['g', 'kg', 'L', 'ml', 'Stück', 'Pack']
 
@@ -42,14 +41,15 @@ const AddItemForm = ({ onAddItem }) => {
         const currentValue = itemAmount.trim()
 
         if (currentValue && !currentValue.includes(unit)) {
-             if(/^\d+$/.test(currentValue)) {
-                 setItemAmount(currentValue + unit)
-             } else {
-                 setItemAmount(currentValue + ' ' + unit)
-             }
-        } else if(!currentValue) {
+            // Wenn schon eine Zahl da ist, unit anhängen
+            if (/^\d+$/.test(currentValue)) {
+                setItemAmount(currentValue + unit)
+            } else {
+                setItemAmount(currentValue + ' ' + unit)
+            }
+        } else if (!currentValue) {
             if (unit === 'Stück' || unit === 'Pack') {
-                setItemAmount('1' + unit)
+                setItemAmount('1 ' + unit)
             } else {
                 setItemAmount('')
                 amountInputRef.current?.focus()
@@ -73,9 +73,9 @@ const AddItemForm = ({ onAddItem }) => {
                     type="text"
                     value={itemName}
                     onChange={(e) => setItemName(e.target.value)}
-                    onKeyPress={handleNameKeyPress}
+                    onKeyDown={handleNameKeyPress}
                     placeholder="Artikel..."
-                    max={30}
+                    maxLength={30}
                     className="add-input name-input"
                     aria-label="Artikel name eingeben"
                 />
@@ -84,7 +84,7 @@ const AddItemForm = ({ onAddItem }) => {
                     type="text"
                     value={itemAmount}
                     onChange={(e) => setItemAmount(e.target.value)}
-                    onKeyPress={handleAmountKeyPress}
+                    onKeyDown={handleAmountKeyPress}
                     placeholder="Menge..."
                     maxLength={15}
                     className="add-input amount-input"
@@ -95,19 +95,19 @@ const AddItemForm = ({ onAddItem }) => {
                     disabled={!itemName.trim()}
                     className="add-btn"
                     aria-label="Artikel zur Liste hinzufügen">
-                    <Plus size={20} />
+                    <Plus size={18} />
                 </button>
             </form>
 
             <div className="quick-units">
-                <span className="quick-units-label">Einheiten:</span>
+                <span className="quick-units-label">Schnell-Einheiten:</span>
                 {quickUnits.map(unit => (
                     <button
-                    key={unit}
-                    type="button"
-                    onClick={() => addQuickUnit(unit)}
-                    className="unit-btn"
-                    aria-label={`${unit} hjinzufügen`}>
+                        key={unit}
+                        type="button"
+                        onClick={() => addQuickUnit(unit)}
+                        className="unit-btn"
+                        aria-label={`${unit} hinzufügen`}>
                         {unit}
                     </button>
                 ))}

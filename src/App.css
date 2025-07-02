@@ -317,31 +317,32 @@ body {
   box-shadow: 0 4px 12px rgba(249,115,22,0.3);
 }
 
-/* Add Item Section */
+/* Add Item Section - Noch kompakter */
 .add-item-section {
-  padding: 20px;
+  padding: 14px 16px;
   border-bottom: 1px solid #e5e7eb;
   background: white;
 }
 
 .add-item-header {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .add-item-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #374151;
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .add-form {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 8px;
+  align-items: stretch;
 }
 
 .add-input {
@@ -379,6 +380,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 50px;
+  height: 30px;
 }
 
 .add-btn:hover:not(:disabled) {
@@ -394,16 +397,16 @@ body {
   box-shadow: none;
 }
 
-/* Quick Units */
+/* Quick Units - Noch kompakter */
 .quick-units {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .quick-units-label {
-  font-size: 12px;
+  font-size: 10px;
   color: #6b7280;
   font-weight: 500;
   margin-right: 4px;
@@ -413,12 +416,14 @@ body {
   background: #f3f4f6;
   border: 1px solid #d1d5db;
   color: #374151;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 10px;
   cursor: pointer;
   transition: all 0.2s;
   font-weight: 500;
+  min-height: 22px;
+  line-height: 1;
 }
 
 .unit-btn:hover {
@@ -548,7 +553,7 @@ body {
 
 .item-name {
   font-size: 16px;
-  color: #374151;
+  color: #f9fafb;
   font-weight: 500;
   transition: all 0.3s;
 }
@@ -572,27 +577,34 @@ body {
   opacity: 0.8;
 }
 
-/* Edit Inputs */
+/* Edit Inputs - Konsistente Lesbarkeit */
 .edit-inputs {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
 }
 
 .edit-input {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  background: white;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #ffffff;
   transition: all 0.2s;
+  color: #374151;
 }
 
 .edit-input:focus {
   outline: none;
   border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+  color: #1f2937;
+}
+
+.edit-input::placeholder {
+  color: #9ca3af;
 }
 
 .edit-name {
@@ -600,7 +612,7 @@ body {
 }
 
 .edit-amount {
-  font-size: 13px;
+  font-size: 12px;
 }
 
 /* Item Actions */
@@ -785,11 +797,17 @@ body {
 @media (max-width: 480px) {
   .add-form {
     flex-direction: column;
+    gap: 6px;
   }
 
   .name-input,
   .amount-input {
     flex: 1;
+    min-height: 36px;
+  }
+
+  .add-btn {
+    min-height: 36px;
   }
 
   .install-prompt {
@@ -799,6 +817,28 @@ body {
 
   .item-actions {
     opacity: 1;
+  }
+
+  .add-item-section {
+    padding: 10px 12px;
+  }
+
+  .list-container {
+    padding: 12px;
+  }
+
+  .list-item {
+    padding: 12px;
+  }
+
+  .quick-units-label {
+    font-size: 9px;
+  }
+
+  .unit-btn {
+    padding: 2px 4px;
+    font-size: 9px;
+    min-height: 20px;
   }
 }
 
@@ -862,10 +902,45 @@ select:focus-visible {
     background: #374151;
     border-color: #4b5563;
     color: #f9fafb;
+    width: 150px;
+    height: 25px;
+  }
+
+  .add-input:focus {
+    background: #4b5563;
+    border-color: #60a5fa;
+    color: #ffffff;
+  }
+
+  .add-input::placeholder {
+    color: #9ca3af;
+  }
+
+  .edit-input {
+    background: #4b5563;
+    border-color: #6b7280;
+    color: #f9fafb;
+  }
+
+  .edit-input:focus {
+    background: #4b5563;
+    border-color: #60a5fa;
+    color: #ffffff;
   }
 
   .settings-title,
   .add-item-title {
     color: #f9fafb;
+  }
+
+  .unit-btn {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+
+  .unit-btn:hover {
+    background: #4b5563;
+    border-color: #6b7280;
   }
 }
