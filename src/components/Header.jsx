@@ -23,7 +23,7 @@ const Header = ({ progress, checkedCount, totalCount, onSettingsClick }) => {
                     <div className="progress-bar">
                         <div
                             className="progess-fill"
-                            sytle={{ width: `${progress}%` }}/>
+                            style={{ width: `${progress}%` }}/>
                     </div>
                 </div>
             </div>
