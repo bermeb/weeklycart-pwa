@@ -135,12 +135,12 @@
 
 /* Calendar Icon */
 .info-footer-calender-icon {
-  color: var(--text-primary);
+  color: var(--text--reset-day);
 }
 
 /* Reset day text */
 .info-footer-resetday-text {
-  color: var(--text-primary);
+  color: var(--text--reset-day);
   font-weight: 500;
 }
 
