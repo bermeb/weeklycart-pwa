@@ -1,0 +1,102 @@
+/* CSS Custom Properties (Variables) */
+:root {
+  /* Colors */
+  --primary-blue: #2563eb;
+  --primary-blue-dark: #1d4ed8;
+  --primary-blue-light: #3b82f6;
+  --primary-purple: #7c3aed;
+  
+  --text-primary: #374151;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --text-white: #f9fafb;
+  --text-light: #ffffff;
+  
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --bg-gray: #e5e7eb;
+  --bg-gray-dark: #d1d5db;
+  
+  --success-green: #22c55e;
+  --success-green-dark: #16a34a;
+  --success-green-light: #10b981;
+  --success-bg: #ecfdf5;
+  --success-border: #86efac;
+  
+  --error-red: #dc2626;
+  --error-red-dark: #b91c1c;
+  --error-red-light: #ef4444;
+  --error-bg: #fef2f2;
+  --error-border: #fecaca;
+  
+  --warning-orange: #f97316;
+  --warning-orange-dark: #ea580c;
+  --warning-bg: #fef3c7;
+  --warning-border: #f59e0b;
+  
+  --info-blue: #0ea5e9;
+  --info-bg: #eff6ff;
+  --info-border: #dbeafe;
+  
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+  --space-4xl: 40px;
+  --space-5xl: 48px;
+  --space-6xl: 60px;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 50%;
+  
+  /* Font Sizes */
+  --text-xs: 10px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 28px;
+  
+  /* Transitions */
+  --transition-fast: all 0.2s ease;
+  --transition-normal: all 0.3s ease;
+  --transition-slow: all 0.5s ease;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+  
+  /* Z-index */
+  --z-modal: 1000;
+  --z-dropdown: 100;
+  --z-sticky: 10;
+  --z-base: 1;
+}
+
+/* Dark mode variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
+    --text-white: #1f2937;
+    
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --bg-tertiary: #374151;
+    --bg-gray: #4b5563;
+    --bg-gray-dark: #6b7280;
+  }
+}
