@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState } from "react" 
 import { Plus, Edit3, Trash2, Check, X, List, Calendar } from 'lucide-react'
 
 const ConfirmationModal = ({ isOpen, onConfirm, onCancel, message }) => {
-    if (!isOpen) return null;
+    if (!isOpen) return null 
 
     return (
         <div className="confirmation-overlay" onClick={onCancel}>
@@ -20,21 +20,21 @@ const ConfirmationModal = ({ isOpen, onConfirm, onCancel, message }) => {
                 </div>
             </div>
         </div>
-    );
-};
+    ) 
+} 
 
 class ListSelectorErrorBoundary extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = { hasError: false, error: null };
+        super(props) 
+        this.state = { hasError: false, error: null } 
     }
 
     static getDerivedStateFromError(error) {
-        return { hasError: true, error };
+        return { hasError: true, error } 
     }
 
     componentDidCatch(error, errorInfo) {
-        console.error('ListSelector Error:', error, errorInfo);
+        console.error('ListSelector Error:', error, errorInfo)
     }
 
     render() {
@@ -47,10 +47,10 @@ class ListSelectorErrorBoundary extends React.Component {
                         Erneut versuchen
                     </button>
                 </div>
-            );
+            ) 
         }
 
-        return this.props.children;
+        return this.props.children 
     }
 }
 
@@ -76,13 +76,13 @@ const ListSelector = ({
 
     const safeLocalStorageOperation = (operation, fallback = null) => {
         try {
-            return operation();
+            return operation()
         } catch (error) {
-            console.error('localStorage operation failed:', error);
-            setValidationError('Speichervorgang fehlgeschlagen. Bitte versuchen Sie es erneut.');
-            return fallback;
+            console.error('localStorage operation failed:', error) 
+            setValidationError('Speichervorgang fehlgeschlagen. Bitte versuchen Sie es erneut.') 
+            return fallback
         }
-    };
+    } 
 
     const handleCreateList = () => {
         const error = validateListName(newListName)
@@ -382,5 +382,5 @@ export default function ListSelectorWithErrorBoundary(props) {
         <ListSelectorErrorBoundary>
             <ListSelector {...props} />
         </ListSelectorErrorBoundary>
-    );
+    ) 
 }

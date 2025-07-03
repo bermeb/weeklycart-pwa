@@ -1,4 +1,5 @@
-import {Calendar, RefreshCw} from "lucide-react";
+import {Calendar, RefreshCw} from "lucide-react"
+import ErrorBoundary from './ErrorBoundary'
 
 const InfoFooter = ({autoReset, resetDay, weekDays, listsCount, onResetCurrentList}) => {
     return (
@@ -28,4 +29,12 @@ const InfoFooter = ({autoReset, resetDay, weekDays, listsCount, onResetCurrentLi
     )
 }
 
-export default InfoFooter
+export default function InfoFooterWithErrorBoundary(props) {
+    return (
+        <ErrorBoundary 
+            componentName="InfoFooter" 
+            fallbackMessage="Die Fußzeile konnte nicht geladen werden.">
+            <InfoFooter {...props} />
+        </ErrorBoundary>
+    )
+}
