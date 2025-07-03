@@ -1,14 +1,15 @@
-import React, {useMemo, useState} from "react";
-import {useLocalStorage} from "./hooks/useLocalStorage.js";
-import {useAutoReset} from "./hooks/useAutoReset.js";
-import InstallPrompt from "./components/InstallPrompt.jsx";
-import Header from "./components/Header.jsx";
-import SettingsPanel from "./components/SettingsPanel.jsx";
-import AddItemForm from "./components/AddItemForm.jsx";
-import ShoppingList from "./components/ShoppingList.jsx";
-import InfoFooter from "./components/InfoFooter.jsx";
+import React, {useMemo, useState} from "react"
+import {useLocalStorage} from "./hooks/useLocalStorage.js"
+import {useAutoReset} from "./hooks/useAutoReset.js"
+import InstallPrompt from "./components/InstallPrompt.jsx"
+import Header from "./components/Header.jsx"
+import SettingsPanel from "./components/SettingsPanel.jsx"
+import AddItemForm from "./components/AddItemForm.jsx"
+import ShoppingList from "./components/ShoppingList.jsx"
+import InfoFooter from "./components/InfoFooter.jsx"
+import ListSelector from "./components/ListSelector.jsx"
+import ErrorBoundary from "./components/ErrorBoundary.jsx"
 import './App.css'
-import ListSelector from "./components/ListSelector.jsx";
 
 const defaultItems = [
     { id: 1, name: 'Proteinmilch', amount: '1L', checked: false },
@@ -33,7 +34,7 @@ function App() {
     const [autoReset, setAutoReset] = useLocalStorage('autoReset', true)
     const [resetDay, setResetDay] = useLocalStorage('resetDay', 5) // Samstag
     const [lastResetDate, setLastResetDate] = useLocalStorage('lastResetDate', new Date().toDateString())
-    const [showSettings, setShowSettings] = useState( false)
+    const [showSettings, setShowSettings] = useState(false)
     const [showListSelector, setShowListSelector] = useState(false)
 
     // Auto-Reset hook
@@ -172,57 +173,85 @@ function App() {
 
     return (
         <div className="app">
-            <InstallPrompt />
+            <ErrorBoundary 
+                componentName="InstallPrompt" 
+                fallbackMessage="Die Installation konnte nicht geladen werden.">
+                <InstallPrompt />
+            </ErrorBoundary>
 
-            <Header
-                progress={progress}
-                checkedCount={checkedCount}
-                totalCount={totalCount}
-                currentListName={currentList?.name || 'Liste'}
-                onSettingsClick={() => setShowSettings(!showSettings)}
-                onListSelectorClick={() => setShowListSelector(!showListSelector)}
-            />
+            <ErrorBoundary 
+                componentName="Header" 
+                fallbackMessage="Die Kopfzeile konnte nicht geladen werden.">
+                <Header
+                    progress={progress}
+                    checkedCount={checkedCount}
+                    totalCount={totalCount}
+                    currentListName={currentList?.name || 'Liste'}
+                    onSettingsClick={() => setShowSettings(!showSettings)}
+                    onListSelectorClick={() => setShowListSelector(!showListSelector)}
+                />
+            </ErrorBoundary>
 
             {showSettings && (
-                <SettingsPanel
-                    autoReset={autoReset}
-                    resetDay={resetDay}
-                    weekDays={weekDays}
-                    onAutoResetChange={setAutoReset}
-                    onResetDayChange={setResetDay}
-                    onManualReset={resetAllLists}
-                    listsCount={lists.length}
-                />
+                <ErrorBoundary 
+                    componentName="SettingsPanel" 
+                    fallbackMessage="Die Einstellungen konnten nicht geladen werden.">
+                    <SettingsPanel
+                        autoReset={autoReset}
+                        resetDay={resetDay}
+                        weekDays={weekDays}
+                        onAutoResetChange={setAutoReset}
+                        onResetDayChange={setResetDay}
+                        onManualReset={resetAllLists}
+                        listsCount={lists.length}
+                    />
+                </ErrorBoundary>
             )}
 
             {showListSelector && (
-                <ListSelector
-                    lists={lists}
-                    currentListId={currentListId}
-                    onSelectList={setCurrentListId}
-                    onCreateList={createList}
-                    onRenameList={renameList}
-                    onDeleteList={deleteList}
-                    onClose={() => setShowListSelector(false)}
-                />
+                <ErrorBoundary 
+                    componentName="ListSelector" 
+                    fallbackMessage="Die Listenauswahl konnte nicht geladen werden.">
+                    <ListSelector
+                        lists={lists}
+                        currentListId={currentListId}
+                        onSelectList={setCurrentListId}
+                        onCreateList={createList}
+                        onRenameList={renameList}
+                        onDeleteList={deleteList}
+                        onClose={() => setShowListSelector(false)}
+                    />
+                </ErrorBoundary>
             )}
 
-            <AddItemForm onAddItem={addItem} />
+            <ErrorBoundary 
+                componentName="AddItemForm" 
+                fallbackMessage="Das Formular konnte nicht geladen werden.">
+                <AddItemForm onAddItem={addItem} />
+            </ErrorBoundary>
 
-            <ShoppingList
-                items={items}
-                onToggleItem={toggleItem}
-                onDeleteItem={deleteItem}
-                onEditItem={editItem}
-            />
+            <ErrorBoundary 
+                componentName="ShoppingList" 
+                fallbackMessage="Die Einkaufsliste konnte nicht geladen werden.">
+                <ShoppingList
+                    items={items}
+                    onToggleItem={toggleItem}
+                    onDeleteItem={deleteItem}
+                    onEditItem={editItem}
+                />
+            </ErrorBoundary>
 
-            <InfoFooter
-                autoReset={autoReset}
-                resetDay={resetDay}
-                weekDays={weekDays}
-                listsCount={lists.length}
-                onResetCurrentList={resetCurrentList}
-            />
+            <ErrorBoundary 
+                componentName="InfoFooter" 
+                fallbackMessage="Die Fußzeile konnte nicht geladen werden.">
+                <InfoFooter
+                    autoReset={autoReset}
+                    resetDay={resetDay}
+                    weekDays={weekDays}
+                    listsCount={lists.length}
+                    onResetCurrentList={resetCurrentList}
+                />
+            </ErrorBoundary>
         </div>
     )
 }

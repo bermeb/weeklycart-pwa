@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Smartphone, Download, X } from 'lucide-react'
+import ErrorBoundary from './ErrorBoundary'
 
 const InstallPrompt = () => {
     const [deferredPrompt, setDeferredPrompt] = useState(null)
@@ -60,4 +61,12 @@ const InstallPrompt = () => {
     )
 }
 
-export default InstallPrompt
+export default function InstallPromptWithErrorBoundary(props) {
+    return (
+        <ErrorBoundary 
+            componentName="InstallPrompt" 
+            fallbackMessage="Die Installation konnte nicht geladen werden.">
+            <InstallPrompt {...props} />
+        </ErrorBoundary>
+    )
+}

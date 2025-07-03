@@ -1,5 +1,6 @@
 import React from 'react'
 import {Calendar, RefreshCw, Settings} from 'lucide-react'
+import ErrorBoundary from './ErrorBoundary'
 
 const SettingsPanel = ({
                            autoReset,
@@ -57,4 +58,12 @@ const SettingsPanel = ({
     )
 }
 
-export default SettingsPanel
+export default function SettingsPanelWithErrorBoundary(props) {
+    return (
+        <ErrorBoundary 
+            componentName="SettingsPanel" 
+            fallbackMessage="Die Einstellungen konnten nicht geladen werden.">
+            <SettingsPanel {...props} />
+        </ErrorBoundary>
+    )
+}
