@@ -89,20 +89,16 @@ const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
 
     return (
         <div
-            className={`list-item ${item.checked ? 'checked' : ''} ${item.checked ? 'completed' : ''}`}
+            className={`list-item ${item.checked ? 'checked completed' : ''}`}
         >
             <div className="item-content">
-                <label className="checkbox-container" onClick={handleToggle}>
-                    <input
-                        type="checkbox"
-                        checked={item.checked}
-                        onChange={handleToggle}
-                        className="checkbox-input"
-                    />
-                    <span className="checkbox-custom">
-            {item.checked && <Check size={14} />}
-          </span>
-                </label>
+                <button
+                    onClick={handleToggle}
+                    className={`checkbox ${item.checked ? 'checked' : ''}`}
+                    aria-label={item.checked ? 'Als nicht gekauft markieren' : 'Als gekauft markieren'}
+                >
+                    {item.checked && <Check size={14} />}
+                </button>
                 <div
                     className="item-text"
                     onClick={handleToggle}

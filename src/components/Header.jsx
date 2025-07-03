@@ -24,7 +24,7 @@ const Header = ({ progress, checkedCount, totalCount, currentListName, onSetting
                 <div className="progress-section">
                     <div className="progress-text">
                         <span>Fortschritt</span>
-                        <span className="progess-count">{checkedCount} von {totalCount}</span>
+                        <span className="progress-count">{checkedCount} von {totalCount}</span>
                     </div>
                     <div className="progress-bar">
                         <div
