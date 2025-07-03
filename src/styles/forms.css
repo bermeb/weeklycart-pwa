@@ -1,0 +1,303 @@
+/* Form Components */
+
+/* Add Item Form */
+.add-item-section {
+  padding: var(--space-lg) var(--space-lg);
+  border-bottom: 1px solid var(--bg-gray);
+  background: var(--bg-primary);
+}
+
+.add-item-header {
+  margin-bottom: var(--space-sm);
+}
+
+.add-item-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.add-form {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+  align-items: stretch;
+  width: 100%;
+}
+
+.add-input {
+  padding: var(--space-lg) var(--space-lg);
+  border: 1px solid var(--bg-gray-dark);
+  border-radius: var(--radius-xl);
+  font-size: var(--text-lg);
+  background: var(--bg-secondary);
+  transition: var(--transition-fast);
+  min-height: 48px;
+  box-sizing: border-box;
+  width: 100%;
+  color: var(--text-primary);
+}
+
+.add-input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.add-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.name-input {
+  flex: 2.5;
+  min-width: 0;
+}
+
+.amount-input {
+  flex: 1.5;
+  min-width: 0;
+}
+
+.add-btn {
+  background: var(--primary-blue);
+  color: var(--text-light);
+  border: none;
+  padding: var(--space-lg) var(--space-xl);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  min-height: 48px;
+  flex-shrink: 0;
+}
+
+.add-btn:hover:not(:disabled) {
+  background: var(--primary-blue-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.add-btn:disabled {
+  background: var(--text-tertiary);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Quick Units */
+.quick-units {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.quick-units-label {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-right: var(--space-xs);
+}
+
+.unit-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--bg-gray-dark);
+  color: var(--text-primary);
+  padding: 3px var(--space-xs);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-weight: 500;
+  min-height: 22px;
+  line-height: 1;
+}
+
+.unit-btn:hover {
+  background: var(--bg-gray);
+  border-color: var(--text-tertiary);
+  transform: translateY(-1px);
+}
+
+.unit-btn:active {
+  background: var(--primary-blue);
+  color: var(--text-light);
+  border-color: var(--primary-blue);
+}
+
+/* Edit Inputs */
+.edit-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  flex: 1;
+}
+
+.edit-input {
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--bg-gray-dark);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  background: var(--bg-primary);
+  transition: var(--transition-fast);
+  color: var(--text-primary);
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+  color: var(--text-primary);
+}
+
+.edit-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.edit-name {
+  font-weight: 500;
+}
+
+.edit-amount {
+  font-size: var(--text-xs);
+}
+
+/* Edit List Input */
+.edit-list-input {
+  background: var(--bg-primary);
+  border: 1px solid var(--primary-blue);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-primary);
+  width: 100%;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.edit-list-input:focus {
+  outline: none;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 900px) {
+  .add-form {
+    flex-direction: column !important;
+    gap: var(--space-lg) !important;
+  }
+  
+  .add-input {
+    width: 100% !important;
+    flex: none !important;
+    min-height: 56px !important;
+    font-size: var(--text-lg) !important;
+    padding: var(--space-xl) !important;
+  }
+  
+  .add-btn {
+    width: 100% !important;
+    flex: none !important;
+    min-height: 56px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .add-form {
+    flex-direction: column !important;
+    gap: var(--space-lg) !important;
+    width: 100% !important;
+    align-items: stretch !important;
+  }
+
+  .name-input {
+    width: 100% !important;
+    min-height: 56px !important;
+    font-size: var(--text-lg) !important;
+    padding: var(--space-xl) !important;
+    border-radius: 14px !important;
+    box-sizing: border-box !important;
+    flex: none !important;
+    max-width: none !important;
+  }
+
+  .amount-input {
+    width: 100% !important;
+    min-height: 56px !important;
+    font-size: var(--text-lg) !important;
+    padding: var(--space-xl) !important;
+    border-radius: 14px !important;
+    box-sizing: border-box !important;
+    flex: none !important;
+    max-width: none !important;
+  }
+
+  .add-btn {
+    width: 100% !important;
+    min-height: 56px !important;
+    padding: var(--space-xl) !important;
+    font-size: 17px !important;
+    border-radius: 14px !important;
+    font-weight: 600 !important;
+    flex: none !important;
+  }
+
+  .add-item-section {
+    padding: 24px var(--space-xl) !important;
+  }
+
+  .add-item-section .add-form {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .quick-units {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+
+  .quick-units-label {
+    font-size: var(--text-base);
+    width: 100%;
+    margin-bottom: var(--space-sm);
+    margin-right: 0;
+  }
+
+  .unit-btn {
+    padding: var(--space-lg) var(--space-xl);
+    font-size: 15px;
+    min-height: 48px;
+    border-radius: var(--radius-xl);
+    flex: 0 0 auto;
+    min-width: 60px;
+  }
+
+  .edit-input {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--text-lg);
+    min-height: 44px;
+  }
+
+  .create-list-input {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--text-lg);
+    min-height: 48px;
+  }
+
+  .create-btn, .save-btn, .cancel-btn {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--text-lg);
+    min-height: 48px;
+  }
+}

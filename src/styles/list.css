@@ -1,0 +1,253 @@
+/* Shopping List Components */
+
+.list-container {
+  flex: 1;
+  padding: var(--space-xl);
+  overflow-y: auto;
+  background: #fafbfc;
+}
+
+.shopping-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.items-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.section-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0 var(--space-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.completed-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xl);
+  border: 2px solid var(--bg-gray);
+  border-radius: var(--radius-2xl);
+  background: var(--bg-primary);
+  transition: var(--transition-normal);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.list-item:hover {
+  border-color: var(--bg-gray-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.list-item.checked {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border-color: #86efac;
+  opacity: 0.8;
+}
+
+.list-item.completed {
+  cursor: pointer;
+}
+
+.list-item.editing {
+  border-color: var(--primary-blue);
+  background: var(--info-bg);
+  cursor: default;
+}
+
+.item-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: var(--space-lg);
+}
+
+.item-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  flex: 1;
+}
+
+.item-name {
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: var(--transition-normal);
+}
+
+.item-amount {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: normal;
+}
+
+.list-item.checked .item-text {
+  text-decoration: line-through;
+}
+
+.list-item.checked .item-name {
+  color: var(--success-green-dark);
+}
+
+.list-item.checked .item-amount {
+  color: var(--success-green-dark);
+  opacity: 0.8;
+}
+
+/* Item Actions */
+.item-actions {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.list-item:hover .item-actions {
+  opacity: 1;
+}
+
+.edit-actions {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.save-btn {
+  color: var(--success-green-light);
+}
+
+.save-btn:hover {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.save-btn:disabled {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  color: var(--error-red);
+}
+
+.cancel-btn:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.delete-btn {
+  color: #ef4444;
+}
+
+.delete-btn:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px var(--space-xl);
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-xl);
+  color: var(--text-tertiary);
+}
+
+.empty-title {
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  font-size: var(--text-xl);
+  color: var(--text-primary);
+}
+
+.empty-subtitle {
+  font-size: var(--text-base);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 1024px) {
+  .item-actions {
+    opacity: 1;
+  }
+
+  .list-container {
+    padding: var(--space-xl);
+  }
+
+  .list-item {
+    padding: var(--space-xl);
+    gap: var(--space-lg);
+    border-radius: var(--radius-2xl);
+  }
+
+  .checkbox {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  .item-name {
+    font-size: var(--text-xl);
+    line-height: 1.4;
+  }
+
+  .item-amount {
+    font-size: 15px;
+    margin-top: 2px;
+  }
+
+  .edit-btn, .delete-btn, .action-btn {
+    padding: var(--space-md);
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
