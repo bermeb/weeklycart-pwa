@@ -461,13 +461,14 @@ body {
     color: #6b7280;
 }
 
-/* Updated Info Footer */
+/* Info Footer */
 .info-footer-container {
     padding: 16px 20px;
-    background: #eff6ff;
-    border-top: 1px solid #dbeafe;
+    background: #e0f2fe;
+    border-top: 0 solid #b3e5fc;
     border-radius: 12px;
     margin: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .info-footer {
@@ -475,8 +476,20 @@ body {
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: #1d4ed8;
+    color: #1f2937;
     margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Calendar Icon  */
+.info-footer-calender-icon {
+    color: #0f172a;
+}
+
+/* Reset day text */
+.info-footer-resetday-text {
+    color: #0f172a;
+    font-weight: 500;
 }
 
 .current-list-actions {
@@ -504,7 +517,7 @@ body {
     transform: translateY(-1px);
 }
 
-/* Updated Settings Next Reset Card */
+/* Settings Next Reset Card */
 .next-reset-info {
     font-size: 11px;
     color: #6b7280;

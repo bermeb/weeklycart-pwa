@@ -5,8 +5,8 @@ const InfoFooter = ({autoReset, resetDay, weekDays, listsCount, onResetCurrentLi
     return (
         <div className="info-footer-container">
             <div className="info-footer">
-                <Calendar size={16}/>
-                <span>
+                <Calendar size={16} className="info-footer-calender-icon"/>
+                <span className="info-footer-resetday-text">
                     {autoReset
                         ? `Alle ${listsCount} Listen werden automatisch jeden ${weekDays[resetDay]} zurückgesetzt`
                         : `${listsCount} Liste${listsCount !== 1 ? 'n' : ''} - Automatisches Zurücksetzen deaktiviert`
