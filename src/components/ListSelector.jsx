@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Plus, Edit3, Trash2, Check, X, List, Calendar } from 'lucide-react'
 
 const ListSelector = ({
@@ -14,43 +14,101 @@ const ListSelector = ({
     const [showCreateForm, setShowCreateForm] = useState(false)
     const [editingListId, setEditingListId] = useState(null)
     const [editingName, setEditingName] = useState('')
+    const [validationError, setValidationError] = useState('')
 
     const handleCreateList = () => {
-        if (newListName.trim()) {
-            onCreateList(newListName.trim())
-            setNewListName('')
-            setShowCreateForm(false)
-            onClose()
+        const error = validateListName(newListName)
+        if (error) {
+            setValidationError(error)
+            return
         }
+
+        onCreateList(newListName.trim())
+        handleNameChange('')
+        setShowCreateForm(false)
+        setValidationError('')
+        onClose()
     }
 
     const handleStartEdit = (list) => {
         setEditingListId(list.id)
-        setEditingName(list.name)
+        handleEditNameChange(list.name)
     }
 
     const handleSaveEdit = () => {
-        if (editingName.trim()) {
-            onRenameList(editingListId, editingName.trim())
-            setEditingListId(null)
-            setEditingName('')
+        const error = validateListName(editingName, editingListId)
+        if (error) {
+            setValidationError(error)
+            return
         }
+
+        onRenameList(editingListId, editingName.trim())
+        setEditingListId(null)
+        handleEditNameChange('')
+        setValidationError('')
     }
 
     const handleCancelEdit = () => {
         setEditingListId(null)
-        setEditingName('')
+        handleEditNameChange('')
     }
 
     const handleDeleteList = (list) => {
-        if (lists.length <= 1) {
-            alert('Die letzte Liste kann nicht gelöscht werden.')
+        const error = validateListDeletion(list.id)
+        if (error) {
+            setValidationError(error)
             return
         }
 
         if (confirm(`Liste "${list.name}" wirklich löschen?`)) {
             onDeleteList(list.id)
+            setValidationError('')
         }
+    }
+
+    const handleNameChange = (value) => {
+        setNewListName(value)
+        if (validationError) setValidationError('')
+    }
+
+    const handleEditNameChange = (value) => {
+        setEditingName(value)
+        if (validationError) setValidationError('')
+    }
+
+    const validateListName = (name, excludeId = null) => {
+        const trimmedName = name.trim()
+
+        if (!trimmedName) {
+            return 'Listenname darf nicht leer sein.'
+        }
+        if (trimmedName.length > 30) {
+            return 'Listenname darf maximal 30 Zeichen lang sein.'
+        }
+
+        const isDuplicate = lists.some(list =>
+            list.id !== excludeId &&
+            list.name.toLowerCase() === trimmedName.toLowerCase()
+        )
+
+        if (isDuplicate) {
+            return 'Eine Liste mit diesem Namen existiert bereits.'
+        }
+
+        return null
+    }
+
+    const validateListDeletion = (listId) => {
+        if (lists.length <= 1) {
+            return 'Die letzte Liste kann nicht gelöscht werden.'
+        }
+
+        const listToDelete = lists.find(list => list.id === listId)
+        if (!listToDelete) {
+            return 'Liste nicht gefunden.'
+        }
+
+        return null
     }
 
     const handleKeyPress = (e, action) => {
@@ -96,7 +154,7 @@ const ListSelector = ({
                                     <input
                                         type="text"
                                         value={editingName}
-                                        onChange={(e) => setEditingName(e.target.value)}
+                                        onChange={(e) => handleEditNameChange(e.target.value)}
                                         onKeyDown={(e) => handleKeyPress(e, handleSaveEdit)}
                                         className="edit-list-input"
                                         placeholder="Listenname..."
@@ -166,13 +224,19 @@ const ListSelector = ({
                     ))}
                 </div>
 
+                {validationError && (
+                    <div className="validation-error">
+                        {validationError}
+                    </div>
+                )}
+
                 <div className="create-list-section">
                     {showCreateForm ? (
                         <div className="create-form">
                             <input
                                 type="text"
                                 value={newListName}
-                                onChange={(e) => setNewListName(e.target.value)}
+                                onChange={(e) => handleNameChange(e.target.value)}
                                 onKeyDown={(e) => handleKeyPress(e, handleCreateList)}
                                 placeholder="z.B. Mediterrane meal prep"
                                 maxLength={30}
@@ -191,7 +255,7 @@ const ListSelector = ({
                                 <button
                                     onClick={() => {
                                         setShowCreateForm(false)
-                                        setNewListName('')
+                                        handleNameChange('')
                                     }}
                                     className="cancel-create-btn"
                                     aria-label="Abbrechen">

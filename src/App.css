@@ -278,6 +278,16 @@ body {
     opacity: 1;
 }
 
+.validation-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    padding: 0.5rem;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
 .action-btn {
     background: none;
     border: none;
