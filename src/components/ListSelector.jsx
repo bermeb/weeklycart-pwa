@@ -1,6 +1,59 @@
 import React, { useState } from "react";
 import { Plus, Edit3, Trash2, Check, X, List, Calendar } from 'lucide-react'
 
+const ConfirmationModal = ({ isOpen, onConfirm, onCancel, message }) => {
+    if (!isOpen) return null;
+
+    return (
+        <div className="confirmation-overlay" onClick={onCancel}>
+            <div className="confirmation-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="confirmation-content">
+                    <p>{message}</p>
+                    <div className="confirmation-actions">
+                        <button onClick={onConfirm} className="confirm-btn">
+                            Ja, löschen
+                        </button>
+                        <button onClick={onCancel} className="cancel-btn">
+                            Abbrechen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+class ListSelectorErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+
+    static getDerivedStateFromError(error) {
+        return { hasError: true, error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error('ListSelector Error:', error, errorInfo);
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="error-fallback">
+                    <h3>Etwas ist schiefgelaufen</h3>
+                    <p>Die Listenauswahl konnte nicht geladen werden.</p>
+                    <button onClick={() => this.setState({ hasError: false })}>
+                        Erneut versuchen
+                    </button>
+                </div>
+            );
+        }
+
+        return this.props.children;
+    }
+}
+
 const ListSelector = ({
                           lists,
                           currentListId,
@@ -15,6 +68,21 @@ const ListSelector = ({
     const [editingListId, setEditingListId] = useState(null)
     const [editingName, setEditingName] = useState('')
     const [validationError, setValidationError] = useState('')
+    const [confirmDelete, setConfirmDelete] = useState({
+        isOpen: false,
+        listId: null,
+        listName: ''
+    })
+
+    const safeLocalStorageOperation = (operation, fallback = null) => {
+        try {
+            return operation();
+        } catch (error) {
+            console.error('localStorage operation failed:', error);
+            setValidationError('Speichervorgang fehlgeschlagen. Bitte versuchen Sie es erneut.');
+            return fallback;
+        }
+    };
 
     const handleCreateList = () => {
         const error = validateListName(newListName)
@@ -23,11 +91,13 @@ const ListSelector = ({
             return
         }
 
-        onCreateList(newListName.trim())
-        handleNameChange('')
-        setShowCreateForm(false)
-        setValidationError('')
-        onClose()
+        safeLocalStorageOperation(() => {
+            onCreateList(newListName.trim())
+            handleNameChange('')
+            setShowCreateForm(false)
+            setValidationError('')
+            onClose()
+        })
     }
 
     const handleStartEdit = (list) => {
@@ -42,10 +112,12 @@ const ListSelector = ({
             return
         }
 
-        onRenameList(editingListId, editingName.trim())
-        setEditingListId(null)
-        handleEditNameChange('')
-        setValidationError('')
+        safeLocalStorageOperation(() => {
+            onRenameList(editingListId, editingName.trim())
+            setEditingListId(null)
+            handleEditNameChange('')
+            setValidationError('')
+        })
     }
 
     const handleCancelEdit = () => {
@@ -60,10 +132,23 @@ const ListSelector = ({
             return
         }
 
-        if (confirm(`Liste "${list.name}" wirklich löschen?`)) {
-            onDeleteList(list.id)
+        setConfirmDelete({
+            isOpen: true,
+            listId: list.id,
+            listName: list.name
+        })
+    }
+
+    const handleConfirmDelete = () => {
+        safeLocalStorageOperation(() => {
+            onDeleteList(confirmDelete.listId)
             setValidationError('')
-        }
+            setConfirmDelete({ isOpen: false, listId: null, listName: '' })
+        })
+    }
+
+    const handleCancelDelete = () => {
+        setConfirmDelete({ isOpen: false, listId: null, listName: '' })
     }
 
     const handleNameChange = (value) => {
@@ -280,9 +365,22 @@ const ListSelector = ({
                         <span>Alle Listen werden automatisch zurückgesetzt</span>
                     </div>
                 </div>
+
+                <ConfirmationModal
+                    isOpen={confirmDelete.isOpen}
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleCancelDelete}
+                    message={`Liste "${confirmDelete.listName}" wirklich löschen?`}
+                />
             </div>
         </div>
     )
 }
 
-export default ListSelector
+export default function ListSelectorWithErrorBoundary(props) {
+    return (
+        <ListSelectorErrorBoundary>
+            <ListSelector {...props} />
+        </ListSelectorErrorBoundary>
+    );
+}
