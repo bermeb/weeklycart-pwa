@@ -41,12 +41,10 @@ const AddItemForm = ({ onAddItem }) => {
         const currentValue = itemAmount.trim()
 
         if (currentValue && !currentValue.includes(unit)) {
-            // Wenn schon eine Zahl da ist, unit anhängen
-            if (/^\d+$/.test(currentValue)) {
-                setItemAmount(currentValue + unit)
-            } else {
-                setItemAmount(currentValue + ' ' + unit)
-            }
+            // Add space only for non-metric units
+            const needsSpace = ['Stück', 'Pack'].includes(unit)
+            const separator = needsSpace ? ' ' : ''
+            setItemAmount(currentValue + separator + unit)
         } else if (!currentValue) {
             if (unit === 'Stück' || unit === 'Pack') {
                 setItemAmount('1 ' + unit)
