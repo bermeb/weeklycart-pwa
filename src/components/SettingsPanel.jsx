@@ -1,14 +1,15 @@
 import React from 'react'
-import { Calendar, RefreshCw, Settings } from 'lucide-react'
+import {Calendar, RefreshCw, Settings} from 'lucide-react'
 
 const SettingsPanel = ({
-    autoReset,
-    resetDay,
-    weekDays,
-    onAutoResetChange,
-    onResetDayChange,
-    onManualReset
-}) => {
+                           autoReset,
+                           resetDay,
+                           weekDays,
+                           onAutoResetChange,
+                           onResetDayChange,
+                           onManualReset,
+                           listsCount
+                       }) => {
     return (
         <div className="settings-panel">
             <div className="settings-header">
@@ -26,7 +27,7 @@ const SettingsPanel = ({
                 <button
                     onClick={() => onAutoResetChange(!autoReset)}
                     className={`toggle ${autoReset ? 'active' : ''}`}
-                    aria-label={`Automatisches Zurücksetzen ${autoReset ? 'deaktivieren' : 'akrtivieren'}`}>
+                    aria-label={`Automatisches Zurücksetzen ${autoReset ? 'deaktivieren' : 'aktivieren'}`}>
                     <div className="toggle-slider"/>
                 </button>
             </div>
@@ -48,9 +49,9 @@ const SettingsPanel = ({
                 </select>
             </div>
 
-            <button onClick={onManualReset} className="reset-btn" aria-label="Liste jetzt zurücksetzten">
+            <button onClick={onManualReset} className="reset-btn" aria-label="Alle Listen jetzt zurücksetzten">
                 <RefreshCw size={16}/>
-                Jetzt Liste zurücksetzten
+                Alle Listen zurücksetzten ({listsCount})
             </button>
         </div>
     )
