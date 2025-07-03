@@ -140,7 +140,7 @@
 
 /* Reset day text */
 .info-footer-resetday-text {
-  color: var(--text-primary);
+  color: var(--text--reset-day);
   font-weight: 500;
 }
 
