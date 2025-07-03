@@ -92,6 +92,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
 }
 
 .settings-btn:hover {
@@ -780,6 +782,29 @@ body {
     gap: 6px;
     margin-bottom: 8px;
     align-items: stretch;
+    width: 100%;
+}
+
+/* Force mobile layout on all small screens */
+@media (max-width: 900px) {
+    .add-form {
+        flex-direction: column !important;
+        gap: 16px !important;
+    }
+    
+    .add-input {
+        width: 100% !important;
+        flex: none !important;
+        min-height: 56px !important;
+        font-size: 16px !important;
+        padding: 18px !important;
+    }
+    
+    .add-btn {
+        width: 100% !important;
+        flex: none !important;
+        min-height: 56px !important;
+    }
 }
 
 .add-input {
@@ -789,6 +814,9 @@ body {
     font-size: 16px;
     background: #f9fafb;
     transition: all 0.2s;
+    min-height: 48px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .add-input:focus {
@@ -799,11 +827,13 @@ body {
 }
 
 .name-input {
-    flex: 2;
+    flex: 2.5;
+    min-width: 0;
 }
 
 .amount-input {
-    flex: 1;
+    flex: 1.5;
+    min-width: 0;
 }
 
 .add-btn {
@@ -817,8 +847,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 30px;
+    min-width: 60px;
+    min-height: 48px;
+    flex-shrink: 0;
 }
 
 .add-btn:hover:not(:disabled) {
@@ -956,8 +987,8 @@ body {
 }
 
 .checkbox {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border: 2px solid #d1d5db;
     border-radius: 50%;
     display: flex;
@@ -966,6 +997,8 @@ body {
     transition: all 0.3s;
     background: white;
     flex-shrink: 0;
+    min-width: 28px;
+    min-height: 28px;
 }
 
 .checkbox.checked {
@@ -990,7 +1023,7 @@ body {
 
 .item-name {
     font-size: 16px;
-    color: #f9fafb;
+    color: #374151;
     font-weight: 500;
     transition: all 0.3s;
 }
@@ -1231,25 +1264,50 @@ body {
 }
 
 /* Mobile Optimizations */
-@media (max-width: 480px) {
+@media (max-width: 1024px) {
     .add-form {
-        flex-direction: column;
-        gap: 6px;
+        flex-direction: column !important;
+        gap: 16px !important;
+        width: 100% !important;
+        align-items: stretch !important;
     }
 
-    .name-input,
+    .name-input {
+        width: 100% !important;
+        min-height: 56px !important;
+        font-size: 16px !important;
+        padding: 18px !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
+        flex: none !important;
+        max-width: none !important;
+    }
+
     .amount-input {
-        flex: 1;
-        min-height: 36px;
+        width: 100% !important;
+        min-height: 56px !important;
+        font-size: 16px !important;
+        padding: 18px !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
+        flex: none !important;
+        max-width: none !important;
     }
 
     .add-btn {
-        min-height: 36px;
+        width: 100% !important;
+        min-height: 56px !important;
+        padding: 18px !important;
+        font-size: 17px !important;
+        border-radius: 14px !important;
+        font-weight: 600 !important;
+        flex: none !important;
     }
 
     .install-prompt {
         flex-direction: column;
         text-align: center;
+        margin: 20px;
     }
 
     .item-actions {
@@ -1257,72 +1315,174 @@ body {
     }
 
     .add-item-section {
-        padding: 10px 12px;
+        padding: 24px 20px !important;
+    }
+
+    .add-item-section .add-form {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
     }
 
     .list-container {
-        padding: 12px;
+        padding: 20px;
     }
 
     .list-item {
-        padding: 12px;
+        padding: 20px;
+        gap: 16px;
+        border-radius: 16px;
+    }
+
+    .checkbox {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    .item-name {
+        font-size: 18px;
+        line-height: 1.4;
+    }
+
+    .item-amount {
+        font-size: 15px;
+        margin-top: 2px;
+    }
+
+    .quick-units {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 8px;
     }
 
     .quick-units-label {
-        font-size: 9px;
+        font-size: 14px;
+        width: 100%;
+        margin-bottom: 8px;
+        margin-right: 0;
     }
 
     .unit-btn {
-        padding: 2px 4px;
-        font-size: 9px;
-        min-height: 20px;
+        padding: 14px 18px;
+        font-size: 15px;
+        min-height: 48px;
+        border-radius: 12px;
+        flex: 0 0 auto;
+        min-width: 60px;
     }
 
     /* List Selector Mobile */
     .list-selector-panel {
         width: 95%;
-        max-height: 85vh;
+        max-height: 90vh;
     }
 
     .list-selector-header {
-        padding: 16px;
+        padding: 20px;
     }
 
     .list-selector-title {
-        font-size: 16px;
+        font-size: 20px;
     }
 
     .list-item-selector {
-        padding: 10px;
+        padding: 16px;
     }
 
     .list-name {
-        font-size: 13px;
+        font-size: 16px;
     }
 
     .list-stats {
-        font-size: 11px;
+        font-size: 14px;
     }
 
     .create-list-section {
-        padding: 12px 16px;
+        padding: 16px 20px;
     }
 
     .list-selector-footer {
-        padding: 10px 16px;
+        padding: 16px 20px;
     }
 
     .footer-info {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     .current-list-name {
-        max-width: 120px;
+        max-width: 150px;
     }
 
     .list-selector-btn {
-        font-size: 12px;
-        padding: 4px 8px;
+        font-size: 14px;
+        padding: 8px 12px;
+        min-height: 36px;
+    }
+
+    /* Button touch targets */
+    .settings-btn {
+        padding: 16px;
+        min-height: 48px;
+        min-width: 48px;
+    }
+
+    .edit-btn, .delete-btn, .action-btn {
+        padding: 12px;
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .close-btn {
+        padding: 12px;
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Form improvements */
+    .create-list-input {
+        padding: 12px 16px;
+        font-size: 16px;
+        min-height: 48px;
+    }
+
+    .edit-input {
+        padding: 12px 16px;
+        font-size: 16px;
+        min-height: 44px;
+    }
+
+    .create-btn, .save-btn, .cancel-btn {
+        padding: 12px 16px;
+        font-size: 16px;
+        min-height: 48px;
+    }
+
+    .day-select {
+        padding: 12px 16px;
+        font-size: 16px;
+        min-height: 48px;
+    }
+
+    .install-btn, .dismiss-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+
+    .reset-btn, .reset-current-btn {
+        padding: 16px;
+        font-size: 16px;
+        min-height: 48px;
+    }
+
+    .add-list-btn {
+        padding: 16px;
+        font-size: 16px;
+        min-height: 48px;
     }
 }
 
@@ -1381,6 +1541,23 @@ body {
     }
 }
 
+/* Safe area for devices with notches */
+@supports (padding: max(0px)) {
+    .header {
+        padding-top: max(env(safe-area-inset-top), 20px);
+        padding-left: max(env(safe-area-inset-left), 20px);
+        padding-right: max(env(safe-area-inset-right), 20px);
+    }
+    
+    .app {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .list-container {
+        padding-bottom: max(env(safe-area-inset-bottom), 20px);
+    }
+}
+
 /* Focus styles for keyboard navigation */
 button:focus-visible,
 input:focus-visible,
@@ -1388,6 +1565,22 @@ select:focus-visible {
     outline: 2px solid #2563eb;
     outline-offset: 2px;
 }
+
+/* Prevent zoom on iOS when focusing inputs */
+@supports (-webkit-touch-callout: none) {
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    textarea,
+    select {
+        font-size: 16px;
+    }
+}
+
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
