@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Plus, ShoppingCart } from 'lucide-react'
+import ErrorBoundary from './ErrorBoundary'
 
 const quickUnits = ['g', 'kg', 'L', 'ml', 'Stück', 'Pack']
 
@@ -114,4 +115,12 @@ const AddItemForm = ({ onAddItem }) => {
     )
 }
 
-export default AddItemForm
+export default function AddItemFormWithErrorBoundary(props) {
+    return (
+        <ErrorBoundary 
+            componentName="AddItemForm" 
+            fallbackMessage="Das Formular konnte nicht geladen werden.">
+            <AddItemForm {...props} />
+        </ErrorBoundary>
+    )
+}

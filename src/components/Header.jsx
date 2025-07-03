@@ -1,5 +1,6 @@
 import React from 'react'
 import {Settings, Check, Sparkles, List, ChevronDown} from 'lucide-react'
+import ErrorBoundary from './ErrorBoundary'
 
 const Header = ({ progress, checkedCount, totalCount, currentListName, onSettingsClick, onListSelectorClick }) => {
     return (
@@ -47,4 +48,12 @@ const Header = ({ progress, checkedCount, totalCount, currentListName, onSetting
     )
 }
 
-export default Header
+export default function HeaderWithErrorBoundary(props) {
+    return (
+        <ErrorBoundary 
+            componentName="Header" 
+            fallbackMessage="Die Kopfzeile konnte nicht geladen werden.">
+            <Header {...props} />
+        </ErrorBoundary>
+    )
+}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Check, Trash2, ShoppingCart, Edit3, Save, X, ClipboardList, CheckCircle } from 'lucide-react'
+import ErrorBoundary from './ErrorBoundary'
 
 const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
     const [isEditing, setIsEditing] = useState(false)
@@ -207,4 +208,12 @@ const ShoppingList = ({ items, onToggleItem, onDeleteItem, onEditItem }) => {
     )
 }
 
-export default ShoppingList
+export default function ShoppingListWithErrorBoundary(props) {
+    return (
+        <ErrorBoundary 
+            componentName="ShoppingList" 
+            fallbackMessage="Die Einkaufsliste konnte nicht geladen werden.">
+            <ShoppingList {...props} />
+        </ErrorBoundary>
+    )
+}
