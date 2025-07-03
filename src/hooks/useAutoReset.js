@@ -13,7 +13,10 @@ export function useAutoReset(autoReset, resetDay, lastResetDate, onReset) {
             // Calculate days since last reset
             const daysDiff = Math.floor((today - lastReset) / (1000 * 60 * 60 * 24))
 
-            if (currentDay === resetDay && daysDiff >= 6) {
+            // Was initial daysDiff => 6
+            // 1 day difference so it won't spam the reset
+            // and so it can't reset twice a day
+            if (currentDay === resetDay && daysDiff >= 1) {
                 console.log('Auto-reset triggered on', today.toDateString())
                 onReset()
             }
@@ -34,7 +37,10 @@ export function useAutoReset(autoReset, resetDay, lastResetDate, onReset) {
                 const lastReset = new Date(lastResetDate)
                 const daysDiff = Math.floor((today - lastReset) / (1000 * 60 * 60 * 24))
 
-                if (currentDay === resetDay && daysDiff >= 6) {
+                // Was initial daysDiff => 6
+                // 1 day difference so it won't spam the reset
+                // and so it can't reset twice a day
+                if (currentDay === resetDay && daysDiff >= 1) {
                     console.log('Auto-reset triggered on visibility change')
                     onReset()
                 }
