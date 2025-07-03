@@ -1,9 +1,7 @@
 import React from 'react'
-import {Settings, Check, Sparkles} from 'lucide-react'
+import {Settings, Check, Sparkles, List, ChevronDown} from 'lucide-react'
 
-const Header = ({ progress, checkedCount, totalCount, onSettingsClick }) => {
-    console.log('Header received:', { progress, checkedCount, totalCount })
-
+const Header = ({ progress, checkedCount, totalCount, currentListName, onSettingsClick, onListSelectorClick }) => {
     return (
         <div className="header">
             <div className="header-content">
@@ -11,6 +9,11 @@ const Header = ({ progress, checkedCount, totalCount, onSettingsClick }) => {
                     <div>
                         <h1 className="title">WeeklyCart</h1>
                         <p className="subtitle">Wöchentlich wiederholende Einkaufsliste</p>
+                        <button onClick={onListSelectorClick} className="list-selector-btn">
+                            <List size={14} />
+                            <span className="current-list-name">{currentListName}</span>
+                            <ChevronDown size={14} />
+                        </button>
                     </div>
                     <button onClick={onSettingsClick} className="settings-btn" aria-label="Einstellungen">
                         <Settings size={20} />
