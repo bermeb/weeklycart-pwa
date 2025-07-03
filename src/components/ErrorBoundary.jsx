@@ -20,7 +20,7 @@ class ErrorBoundary extends React.Component {
                 <div className="error-fallback">
                     <h3>Etwas ist schiefgelaufen</h3>
                     <p>{this.props.fallbackMessage || 'Komponente konnte nicht geladen werden!'}</p>
-                    <button onClick={() => this.setState({ hasError: false })}>
+                    <button onClick={() => this.setState({ hasError: false, error: null })}>
                         Erneut versuchen
                     </button>
                 </div>
