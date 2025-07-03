@@ -42,7 +42,7 @@ function App() {
     })
 
     const currentList = lists.find(list => list.id === currentListId) || lists[0]
-    const items = currentList?.items || []
+    const items = useMemo(() => currentList?.items || [], [currentList?.items])
 
     // Toggle item checked status (manual reset/check individual items)
     const toggleItem = (id) => {
