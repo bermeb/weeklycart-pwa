@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect} from "react"
 
 
 export function useAutoReset(autoReset, resetDay, lastResetDate, onReset) {

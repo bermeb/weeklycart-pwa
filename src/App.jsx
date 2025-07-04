@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react"
+import React, {useMemo, useState, useEffect} from "react"
 import {useLocalStorage} from "./hooks/useLocalStorage.js"
 import {useAutoReset} from "./hooks/useAutoReset.js"
 import InstallPrompt from "./components/InstallPrompt.jsx"
@@ -9,6 +9,9 @@ import ShoppingList from "./components/ShoppingList.jsx"
 import InfoFooter from "./components/InfoFooter.jsx"
 import ListSelector from "./components/ListSelector.jsx"
 import ErrorBoundary from "./components/ErrorBoundary.jsx"
+import { decodeListData } from "./utils/sharing.js"
+import { processImportedData } from "./utils/dataExport.js"
+import { checkStorageSpace } from "./utils/validation.js"
 import './App.css'
 
 const defaultItems = [
@@ -36,11 +39,46 @@ function App() {
     const [lastResetDate, setLastResetDate] = useLocalStorage('lastResetDate', new Date().toDateString())
     const [showSettings, setShowSettings] = useState(false)
     const [showListSelector, setShowListSelector] = useState(false)
+    const [importNotification, setImportNotification] = useState('')
 
     // Auto-Reset hook
     useAutoReset(autoReset, resetDay, lastResetDate, () => {
         resetAllLists()
     })
+
+    // Handle URL-based imports
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search)
+        const importData = urlParams.get('import')
+        
+        if (importData) {
+            try {
+                const decodedData = decodeListData(importData)
+                const processedLists = processImportedData(decodedData, lists, 'append')
+                
+                // Check storage space before importing
+                const storageCheck = checkStorageSpace(processedLists)
+                if (!storageCheck.hasSpace) {
+                    setImportNotification(`Import failed: ${storageCheck.error}`)
+                    setTimeout(() => setImportNotification(''), 5000)
+                    return
+                }
+                
+                setLists(processedLists)
+                
+                const importedCount = decodedData.lists ? decodedData.lists.length : 1
+                setImportNotification(`${importedCount} Liste(n) erfolgreich importiert!`)
+                
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname)
+                
+                setTimeout(() => setImportNotification(''), 5000)
+            } catch (error) {
+                setImportNotification(`Import failed: ${error.message}`)
+                setTimeout(() => setImportNotification(''), 5000)
+            }
+        }
+    }, [lists, setLists])
 
     const currentList = lists.find(list => list.id === currentListId) || lists[0]
     const items = useMemo(() => currentList?.items || [], [currentList?.items])
@@ -157,6 +195,15 @@ function App() {
         setLastResetDate(new Date().toDateString())
     }
 
+    const handleImportLists = (importedLists) => {
+        setLists(importedLists)
+        
+        // If current list no longer exists, switch to first available list
+        if (!importedLists.find(list => list.id === currentListId)) {
+            setCurrentListId(importedLists[0]?.id || 1)
+        }
+    }
+
     // Calculate progress for current list
     // useMemo for optimized updating of progress
     const { checkedCount, totalCount, progress } = useMemo(() => {
@@ -192,6 +239,12 @@ function App() {
                 />
             </ErrorBoundary>
 
+            {importNotification && (
+                <div className="import-notification">
+                    {importNotification}
+                </div>
+            )}
+
             {showSettings && (
                 <ErrorBoundary 
                     componentName="SettingsPanel" 
@@ -204,6 +257,9 @@ function App() {
                         onResetDayChange={setResetDay}
                         onManualReset={resetAllLists}
                         listsCount={lists.length}
+                        lists={lists}
+                        currentList={currentList}
+                        onImportLists={handleImportLists}
                     />
                 </ErrorBoundary>
             )}
