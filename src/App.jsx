@@ -157,6 +157,15 @@ function App() {
         setLastResetDate(new Date().toDateString())
     }
 
+    const handleImportLists = (importedLists) => {
+        setLists(importedLists)
+        
+        // If current list no longer exists, switch to first available list
+        if (!importedLists.find(list => list.id === currentListId)) {
+            setCurrentListId(importedLists[0]?.id || 1)
+        }
+    }
+
     // Calculate progress for current list
     // useMemo for optimized updating of progress
     const { checkedCount, totalCount, progress } = useMemo(() => {
@@ -204,6 +213,9 @@ function App() {
                         onResetDayChange={setResetDay}
                         onManualReset={resetAllLists}
                         listsCount={lists.length}
+                        lists={lists}
+                        currentList={currentList}
+                        onImportLists={handleImportLists}
                     />
                 </ErrorBoundary>
             )}

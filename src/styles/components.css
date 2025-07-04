@@ -731,3 +731,215 @@
 .add-list-btn:hover {
   background: var(--primary-blue-dark);
 }
+
+/* Export/Import Styles */
+.settings-divider {
+  border-top: 1px solid var(--bg-gray);
+  margin: var(--space-xl) 0;
+}
+
+.export-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.export-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.export-section-title {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.export-button-group {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.export-btn {
+  background: var(--primary-blue);
+  color: var(--text-light);
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  transition: var(--transition-fast);
+  flex: 1;
+  justify-content: center;
+}
+
+.export-btn:hover {
+  background: var(--primary-blue-dark);
+  transform: translateY(-1px);
+}
+
+.import-section {
+  margin-bottom: var(--space-lg);
+}
+
+.import-btn {
+  background: var(--success-green);
+  color: var(--text-light);
+  border: none;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: var(--transition-fast);
+  width: 100%;
+  justify-content: center;
+}
+
+.import-btn:hover {
+  background: var(--success-green-dark);
+  transform: translateY(-1px);
+}
+
+.import-status {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  margin-top: var(--space-md);
+  text-align: center;
+}
+
+.import-status.success {
+  background: var(--success-bg);
+  color: var(--success-green-dark);
+  border: 1px solid var(--success-border);
+}
+
+.import-status.error {
+  background: var(--error-bg);
+  color: var(--error-red-dark);
+  border: 1px solid var(--error-border);
+}
+
+.import-options {
+  background: var(--bg-primary);
+  border: 1px solid var(--bg-gray);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-top: var(--space-md);
+  animation: slideDown 0.3s ease-out;
+}
+
+.import-options h4 {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.import-options p {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-lg) 0;
+}
+
+.import-buttons {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.import-option-btn {
+  border: none;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.import-option-btn.append {
+  background: var(--primary-blue);
+  color: var(--text-light);
+}
+
+.import-option-btn.append:hover {
+  background: var(--primary-blue-dark);
+}
+
+.import-option-btn.replace {
+  background: var(--warning-orange);
+  color: var(--text-light);
+}
+
+.import-option-btn.replace:hover {
+  background: var(--warning-orange-dark);
+}
+
+.import-option-btn.cancel {
+  background: var(--bg-gray);
+  color: var(--text-secondary);
+}
+
+.import-option-btn.cancel:hover {
+  background: var(--bg-gray-dark);
+  color: var(--text-primary);
+}
+
+.reset-btn {
+  background: var(--error-red);
+  color: var(--text-light);
+  border: none;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: var(--transition-fast);
+  width: 100%;
+  justify-content: center;
+}
+
+.reset-btn:hover {
+  background: var(--error-red-dark);
+  transform: translateY(-1px);
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.settings-row:last-child {
+  margin-bottom: 0;
+}
+
+.settings-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+}
