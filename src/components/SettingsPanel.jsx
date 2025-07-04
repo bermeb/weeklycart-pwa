@@ -28,40 +28,42 @@ const SettingsPanel = ({
                            currentList,
                            onImportLists
                        }) => {
-    const [importStatus, setImportStatus] = useState('');
-    const [showImportOptions, setShowImportOptions] = useState(false);
-    const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
-    const [showQRCode, setShowQRCode] = useState(false);
-    const [qrCodeUrl, setQrCodeUrl] = useState('');
-    const fileInputRef = useRef(null);
+    const [importStatus, setImportStatus] = useState('')
+    const [showImportOptions, setShowImportOptions] = useState(false)
+    const [showReplaceConfirm, setShowReplaceConfirm] = useState(false)
+    const [showQRCode, setShowQRCode] = useState(false)
+    const [qrCodeUrl, setQrCodeUrl] = useState('')
+    const [pendingImportData, setPendingImportData] = useState(null)
+    const [isGeneratingQR, setIsGeneratingQR] = useState(false)
+    const fileInputRef = useRef(null)
 
     const handleExportAllJSON = () => {
-        exportListsToJSON(lists);
-        setImportStatus('Alle Listen als JSON exportiert');
-        setTimeout(() => setImportStatus(''), 3000);
-    };
+        exportListsToJSON(lists)
+        setImportStatus('Alle Listen als JSON exportiert')
+        setTimeout(() => setImportStatus(''), 3000)
+    }
 
     const handleExportAllText = () => {
-        exportListsToText(lists);
-        setImportStatus('Alle Listen als Text exportiert');
-        setTimeout(() => setImportStatus(''), 3000);
-    };
+        exportListsToText(lists)
+        setImportStatus('Alle Listen als Text exportiert')
+        setTimeout(() => setImportStatus(''), 3000)
+    }
 
     const handleExportCurrentJSON = () => {
         if (currentList) {
-            exportSingleListToJSON(currentList);
-            setImportStatus('Aktuelle Liste als JSON exportiert');
-            setTimeout(() => setImportStatus(''), 3000);
+            exportSingleListToJSON(currentList)
+            setImportStatus('Aktuelle Liste als JSON exportiert')
+            setTimeout(() => setImportStatus(''), 3000)
         }
-    };
+    }
 
     const handleExportCurrentText = () => {
         if (currentList) {
-            exportSingleListToText(currentList);
-            setImportStatus('Aktuelle Liste als Text exportiert');
-            setTimeout(() => setImportStatus(''), 3000);
+            exportSingleListToText(currentList)
+            setImportStatus('Aktuelle Liste als Text exportiert')
+            setTimeout(() => setImportStatus(''), 3000)
         }
-    };
+    }
 
     // Mobile sharing handlers
     const handleShareAllLists = async () => {
@@ -75,25 +77,25 @@ const SettingsPanel = ({
                     amount: item.amount
                 }))
             }))
-        };
+        }
 
         try {
             if (isWebShareSupported()) {
-                await shareViaWebShare(shareData, false);
-                setImportStatus('Listen geteilt');
+                await shareViaWebShare(shareData, false)
+                setImportStatus('Listen geteilt')
             } else {
-                await copyShareUrl(shareData);
-                setImportStatus('Share-Link kopiert');
+                await copyShareUrl(shareData)
+                setImportStatus('Share-Link kopiert')
             }
-            setTimeout(() => setImportStatus(''), 3000);
+            setTimeout(() => setImportStatus(''), 3000)
         } catch {
-            setImportStatus('Fehler beim Teilen');
-            setTimeout(() => setImportStatus(''), 3000);
+            setImportStatus('Fehler beim Teilen')
+            setTimeout(() => setImportStatus(''), 3000)
         }
-    };
+    }
 
     const handleShareCurrentList = async () => {
-        if (!currentList) return;
+        if (!currentList) return
         
         const shareData = {
             version: '1.0',
@@ -105,24 +107,24 @@ const SettingsPanel = ({
                     amount: item.amount
                 }))
             }
-        };
+        }
 
         try {
             if (isWebShareSupported()) {
-                await shareViaWebShare(shareData, true);
-                setImportStatus('Liste geteilt');
+                await shareViaWebShare(shareData, true)
+                setImportStatus('Liste geteilt')
             } else {
-                await copyShareUrl(shareData);
-                setImportStatus('Share-Link kopiert');
+                await copyShareUrl(shareData)
+                setImportStatus('Share-Link kopiert')
             }
-            setTimeout(() => setImportStatus(''), 3000);
+            setTimeout(() => setImportStatus(''), 3000)
         } catch {
-            setImportStatus('Fehler beim Teilen');
-            setTimeout(() => setImportStatus(''), 3000);
+            setImportStatus('Fehler beim Teilen')
+            setTimeout(() => setImportStatus(''), 3000)
         }
-    };
+    }
 
-    const handleShowQRCode = (isSingleList = false) => {
+    const handleShowQRCode = async (isSingleList = false) => {
         const shareData = isSingleList ? {
             version: '1.0',
             exportDate: new Date().toISOString(),
@@ -143,98 +145,107 @@ const SettingsPanel = ({
                     amount: item.amount
                 }))
             }))
-        };
+        }
 
-        const qrUrl = generateQRCode(shareData);
-        setQrCodeUrl(qrUrl);
-        setShowQRCode(true);
-    };
+        setIsGeneratingQR(true)
+        
+        try {
+            const qrUrl = await generateQRCode(shareData)
+            setQrCodeUrl(qrUrl)
+            setShowQRCode(true)
+        } catch (error) {
+            setImportStatus(`QR-Code Fehler: ${error.message}`)
+            setTimeout(() => setImportStatus(''), 5000)
+        } finally {
+            setIsGeneratingQR(false)
+        }
+    }
 
     const handleImportClick = () => {
-        fileInputRef.current?.click();
-    };
+        fileInputRef.current?.click()
+    }
 
     const handleFileImport = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
+        const file = event.target.files[0]
+        if (!file) return
 
         try {
-            setImportStatus('Importiere...');
-            const importedData = await importListsFromJSON(file);
-            setShowImportOptions(true);
-            setImportStatus('');
+            setImportStatus('Importiere...')
+            const importedData = await importListsFromJSON(file)
+            setShowImportOptions(true)
+            setImportStatus('')
             
-            window.pendingImport = importedData;
+            setPendingImportData(importedData)
         } catch (error) {
-            setImportStatus(`Fehler beim Import: ${error.message}`);
-            setTimeout(() => setImportStatus(''), 5000);
+            setImportStatus(`Fehler beim Import: ${error.message}`)
+            setTimeout(() => setImportStatus(''), 5000)
         }
         
-        event.target.value = '';
-    };
+        event.target.value = ''
+    }
 
     const getImportType = () => {
-        if (!window.pendingImport) return 'unknown';
-        return window.pendingImport.lists ? 'multiple' : 'single';
-    };
+        if (!pendingImportData) return 'unknown'
+        return pendingImportData.lists ? 'multiple' : 'single'
+    }
 
     const hasNameConflict = () => {
-        if (!window.pendingImport) return false;
+        if (!pendingImportData) return false
         
-        const existingNames = new Set(lists.map(list => list.name));
+        const existingNames = new Set(lists.map(list => list.name))
         
-        if (window.pendingImport.lists) {
-            return window.pendingImport.lists.some(list => existingNames.has(list.name));
-        } else if (window.pendingImport.list) {
-            return existingNames.has(window.pendingImport.list.name);
+        if (pendingImportData.lists) {
+            return pendingImportData.lists.some(list => existingNames.has(list.name))
+        } else if (pendingImportData.list) {
+            return existingNames.has(pendingImportData.list.name)
         }
         
-        return false;
-    };
+        return false
+    }
 
     const handleConfirmImport = (strategy) => {
         if (strategy === 'replace') {
-            setShowReplaceConfirm(true);
-            return;
+            setShowReplaceConfirm(true)
+            return
         }
         
         try {
-            const processedLists = processImportedData(window.pendingImport, lists, strategy);
-            onImportLists(processedLists);
-            setImportStatus(`Listen erfolgreich ${strategy === 'replace' ? 'ersetzt' : 'hinzugefügt'}`);
-            setShowImportOptions(false);
-            delete window.pendingImport;
-            setTimeout(() => setImportStatus(''), 3000);
+            const processedLists = processImportedData(pendingImportData, lists, strategy)
+            onImportLists(processedLists)
+            setImportStatus(`Listen erfolgreich ${strategy === 'replace' ? 'ersetzt' : 'hinzugefügt'}`)
+            setShowImportOptions(false)
+            setPendingImportData(null)
+            setTimeout(() => setImportStatus(''), 3000)
         } catch (error) {
-            setImportStatus(`Fehler beim Import: ${error.message}`);
-            setTimeout(() => setImportStatus(''), 5000);
+            setImportStatus(`Fehler beim Import: ${error.message}`)
+            setTimeout(() => setImportStatus(''), 5000)
         }
-    };
+    }
 
     const handleConfirmReplace = () => {
         try {
-            const processedLists = processImportedData(window.pendingImport, lists, 'replace');
-            onImportLists(processedLists);
-            setImportStatus('Listen erfolgreich ersetzt');
-            setShowImportOptions(false);
-            setShowReplaceConfirm(false);
-            delete window.pendingImport;
-            setTimeout(() => setImportStatus(''), 3000);
+            const processedLists = processImportedData(pendingImportData, lists, 'replace')
+            onImportLists(processedLists)
+            setImportStatus('Listen erfolgreich ersetzt')
+            setShowImportOptions(false)
+            setShowReplaceConfirm(false)
+            setPendingImportData(null)
+            setTimeout(() => setImportStatus(''), 3000)
         } catch (error) {
-            setImportStatus(`Fehler beim Import: ${error.message}`);
-            setTimeout(() => setImportStatus(''), 5000);
+            setImportStatus(`Fehler beim Import: ${error.message}`)
+            setTimeout(() => setImportStatus(''), 5000)
         }
-    };
+    }
 
     const handleCancelReplace = () => {
-        setShowReplaceConfirm(false);
-    };
+        setShowReplaceConfirm(false)
+    }
 
     const handleCancelImport = () => {
-        setShowImportOptions(false);
-        delete window.pendingImport;
-        setImportStatus('');
-    };
+        setShowImportOptions(false)
+        setPendingImportData(null)
+        setImportStatus('')
+    }
     return (
         <div className="settings-panel">
             <div className="settings-header">
@@ -296,9 +307,12 @@ const SettingsPanel = ({
                             <Share2 size={16}/>
                             {isWebShareSupported() ? 'Teilen' : 'Link kopieren'}
                         </button>
-                        <button onClick={() => handleShowQRCode(false)} className="export-btn">
+                        <button 
+                            onClick={() => handleShowQRCode(false)} 
+                            className="export-btn"
+                            disabled={isGeneratingQR}>
                             <QrCode size={16}/>
-                            QR-Code
+                            {isGeneratingQR ? 'Erstelle...' : 'QR-Code'}
                         </button>
                     </div>
                 </div>
@@ -311,9 +325,12 @@ const SettingsPanel = ({
                                 <Share2 size={16}/>
                                 {isWebShareSupported() ? 'Teilen' : 'Link kopieren'}
                             </button>
-                            <button onClick={() => handleShowQRCode(true)} className="export-btn">
+                            <button 
+                                onClick={() => handleShowQRCode(true)} 
+                                className="export-btn"
+                                disabled={isGeneratingQR}>
                                 <QrCode size={16}/>
-                                QR-Code
+                                {isGeneratingQR ? 'Erstelle...' : 'QR-Code'}
                             </button>
                         </div>
                     </div>

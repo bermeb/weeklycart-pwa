@@ -11,6 +11,7 @@ import ListSelector from "./components/ListSelector.jsx"
 import ErrorBoundary from "./components/ErrorBoundary.jsx"
 import { decodeListData } from "./utils/sharing.js"
 import { processImportedData } from "./utils/dataExport.js"
+import { checkStorageSpace } from "./utils/validation.js"
 import './App.css'
 
 const defaultItems = [
@@ -47,28 +48,37 @@ function App() {
 
     // Handle URL-based imports
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const importData = urlParams.get('import');
+        const urlParams = new URLSearchParams(window.location.search)
+        const importData = urlParams.get('import')
         
         if (importData) {
             try {
-                const decodedData = decodeListData(importData);
-                const processedLists = processImportedData(decodedData, lists, 'append');
-                setLists(processedLists);
+                const decodedData = decodeListData(importData)
+                const processedLists = processImportedData(decodedData, lists, 'append')
                 
-                const importedCount = decodedData.lists ? decodedData.lists.length : 1;
-                setImportNotification(`${importedCount} Liste(n) erfolgreich importiert!`);
+                // Check storage space before importing
+                const storageCheck = checkStorageSpace(processedLists)
+                if (!storageCheck.hasSpace) {
+                    setImportNotification(`Import failed: ${storageCheck.error}`)
+                    setTimeout(() => setImportNotification(''), 5000)
+                    return
+                }
+                
+                setLists(processedLists)
+                
+                const importedCount = decodedData.lists ? decodedData.lists.length : 1
+                setImportNotification(`${importedCount} Liste(n) erfolgreich importiert!`)
                 
                 // Clean up URL
-                window.history.replaceState({}, document.title, window.location.pathname);
+                window.history.replaceState({}, document.title, window.location.pathname)
                 
-                setTimeout(() => setImportNotification(''), 5000);
-            } catch {
-                setImportNotification('Fehler beim Import: Ungültiger Link');
-                setTimeout(() => setImportNotification(''), 5000);
+                setTimeout(() => setImportNotification(''), 5000)
+            } catch (error) {
+                setImportNotification(`Import failed: ${error.message}`)
+                setTimeout(() => setImportNotification(''), 5000)
             }
         }
-    }, [lists, setLists]);
+    }, [lists, setLists])
 
     const currentList = lists.find(list => list.id === currentListId) || lists[0]
     const items = useMemo(() => currentList?.items || [], [currentList?.items])
