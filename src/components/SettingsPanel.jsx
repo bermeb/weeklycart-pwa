@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import {Calendar, RefreshCw, Settings, Download, Upload, FileText, FileDown} from 'lucide-react'
+import {Calendar, RefreshCw, Settings, Upload, FileText, FileDown, Share2, QrCode} from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
 import { 
     exportListsToJSON, 
@@ -9,6 +9,12 @@ import {
     importListsFromJSON,
     processImportedData 
 } from '../utils/dataExport'
+import {
+    shareViaWebShare,
+    copyShareUrl,
+    generateQRCode,
+    isWebShareSupported
+} from '../utils/sharing'
 
 const SettingsPanel = ({
                            autoReset,
@@ -25,6 +31,8 @@ const SettingsPanel = ({
     const [importStatus, setImportStatus] = useState('');
     const [showImportOptions, setShowImportOptions] = useState(false);
     const [showReplaceConfirm, setShowReplaceConfirm] = useState(false);
+    const [showQRCode, setShowQRCode] = useState(false);
+    const [qrCodeUrl, setQrCodeUrl] = useState('');
     const fileInputRef = useRef(null);
 
     const handleExportAllJSON = () => {
@@ -53,6 +61,93 @@ const SettingsPanel = ({
             setImportStatus('Aktuelle Liste als Text exportiert');
             setTimeout(() => setImportStatus(''), 3000);
         }
+    };
+
+    // Mobile sharing handlers
+    const handleShareAllLists = async () => {
+        const shareData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            lists: lists.map(list => ({
+                name: list.name,
+                items: list.items.map(item => ({
+                    name: item.name,
+                    amount: item.amount
+                }))
+            }))
+        };
+
+        try {
+            if (isWebShareSupported()) {
+                await shareViaWebShare(shareData, false);
+                setImportStatus('Listen geteilt');
+            } else {
+                await copyShareUrl(shareData);
+                setImportStatus('Share-Link kopiert');
+            }
+            setTimeout(() => setImportStatus(''), 3000);
+        } catch {
+            setImportStatus('Fehler beim Teilen');
+            setTimeout(() => setImportStatus(''), 3000);
+        }
+    };
+
+    const handleShareCurrentList = async () => {
+        if (!currentList) return;
+        
+        const shareData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            list: {
+                name: currentList.name,
+                items: currentList.items.map(item => ({
+                    name: item.name,
+                    amount: item.amount
+                }))
+            }
+        };
+
+        try {
+            if (isWebShareSupported()) {
+                await shareViaWebShare(shareData, true);
+                setImportStatus('Liste geteilt');
+            } else {
+                await copyShareUrl(shareData);
+                setImportStatus('Share-Link kopiert');
+            }
+            setTimeout(() => setImportStatus(''), 3000);
+        } catch {
+            setImportStatus('Fehler beim Teilen');
+            setTimeout(() => setImportStatus(''), 3000);
+        }
+    };
+
+    const handleShowQRCode = (isSingleList = false) => {
+        const shareData = isSingleList ? {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            list: {
+                name: currentList.name,
+                items: currentList.items.map(item => ({
+                    name: item.name,
+                    amount: item.amount
+                }))
+            }
+        } : {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            lists: lists.map(list => ({
+                name: list.name,
+                items: list.items.map(item => ({
+                    name: item.name,
+                    amount: item.amount
+                }))
+            }))
+        };
+
+        const qrUrl = generateQRCode(shareData);
+        setQrCodeUrl(qrUrl);
+        setShowQRCode(true);
     };
 
     const handleImportClick = () => {
@@ -188,41 +283,67 @@ const SettingsPanel = ({
 
             <div className="settings-header">
                 <h3 className="settings-title">
-                    <Download size={18}/>
-                    Daten Export & Import
+                    <Share2 size={18}/>
+                    Listen teilen & importieren
                 </h3>
             </div>
 
             <div className="export-buttons">
                 <div className="export-section">
-                    <h4 className="export-section-title">Alle Listen exportieren</h4>
+                    <h4 className="export-section-title">Alle Listen teilen</h4>
                     <div className="export-button-group">
-                        <button onClick={handleExportAllJSON} className="export-btn">
-                            <FileDown size={16}/>
-                            JSON
+                        <button onClick={handleShareAllLists} className="export-btn share-btn">
+                            <Share2 size={16}/>
+                            {isWebShareSupported() ? 'Teilen' : 'Link kopieren'}
                         </button>
-                        <button onClick={handleExportAllText} className="export-btn">
-                            <FileText size={16}/>
-                            Text
+                        <button onClick={() => handleShowQRCode(false)} className="export-btn">
+                            <QrCode size={16}/>
+                            QR-Code
                         </button>
                     </div>
                 </div>
 
                 {currentList && (
                     <div className="export-section">
-                        <h4 className="export-section-title">Aktuelle Liste exportieren</h4>
+                        <h4 className="export-section-title">Aktuelle Liste teilen</h4>
                         <div className="export-button-group">
-                            <button onClick={handleExportCurrentJSON} className="export-btn">
-                                <FileDown size={16}/>
-                                JSON
+                            <button onClick={handleShareCurrentList} className="export-btn share-btn">
+                                <Share2 size={16}/>
+                                {isWebShareSupported() ? 'Teilen' : 'Link kopieren'}
                             </button>
-                            <button onClick={handleExportCurrentText} className="export-btn">
-                                <FileText size={16}/>
-                                Text
+                            <button onClick={() => handleShowQRCode(true)} className="export-btn">
+                                <QrCode size={16}/>
+                                QR-Code
                             </button>
                         </div>
                     </div>
                 )}
+
+                <div className="export-section">
+                    <h4 className="export-section-title">Backup-Export (Datei)</h4>
+                    <div className="export-button-group">
+                        <button onClick={handleExportAllJSON} className="export-btn backup-btn">
+                            <FileDown size={16}/>
+                            Alle Listen (JSON)
+                        </button>
+                        <button onClick={handleExportAllText} className="export-btn backup-btn">
+                            <FileText size={16}/>
+                            Alle Listen (Text)
+                        </button>
+                        {currentList && (
+                            <>
+                                <button onClick={handleExportCurrentJSON} className="export-btn backup-btn">
+                                    <FileDown size={16}/>
+                                    Aktuelle Liste (JSON)
+                                </button>
+                                <button onClick={handleExportCurrentText} className="export-btn backup-btn">
+                                    <FileText size={16}/>
+                                    Aktuelle Liste (Text)
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="import-section">
@@ -291,6 +412,25 @@ const SettingsPanel = ({
                             className="import-option-btn cancel">
                             Abbrechen
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {showQRCode && (
+                <div className="qr-modal">
+                    <div className="qr-modal-content">
+                        <h4>QR-Code zum Teilen</h4>
+                        <p>Scannen Sie diesen QR-Code, um die Liste zu importieren:</p>
+                        <div className="qr-code-container">
+                            <img src={qrCodeUrl} alt="QR Code" className="qr-code-image" />
+                        </div>
+                        <div className="qr-modal-buttons">
+                            <button 
+                                onClick={() => setShowQRCode(false)} 
+                                className="import-option-btn cancel">
+                                Schließen
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
