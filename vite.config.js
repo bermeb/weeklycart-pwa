@@ -11,9 +11,12 @@ export default defineConfig({
       includeAssets: [
         'favicon-16x16.png',
         'favicon-32x32.png',
-        'apple-touch-icon.png',
+        'apple-touch-icon-180x180.png',
+        'apple-touch-icon-167x167.png',
+        'apple-touch-icon-152x152.png',
         'safari-pinned-tab.svg',
-        'maskable-icon-512x512.png'
+        'maskable-icon-512x512.png',
+        'maskable-icon-192x192.png'
       ],
       manifest: {
         name: 'WeeklyCart',
@@ -28,8 +31,38 @@ export default defineConfig({
         lang: 'de-DE',
         icons: [
           {
+            src: 'pwa-96x96.png',
+            sizes: '96x96',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: 'pwa-144x144.png',
+            sizes: '144x144',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
             src: 'pwa-192x192.png',
             sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: 'maskable-icon-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'maskable'
+          },
+          {
+            src: 'pwa-256x256.png',
+            sizes: '256x256',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: 'pwa-384x384.png',
+            sizes: '384x384',
             type: 'image/png',
             purpose: 'any'
           },
@@ -46,7 +79,19 @@ export default defineConfig({
             purpose: 'maskable'
           },
           {
-            src: 'apple-touch-icon.png',
+            src: 'apple-touch-icon-152x152.png',
+            sizes: '152x152',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: 'apple-touch-icon-167x167.png',
+            sizes: '167x167',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: 'apple-touch-icon-180x180.png',
             sizes: '180x180',
             type: 'image/png',
             purpose: 'any'
