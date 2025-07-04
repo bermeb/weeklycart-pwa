@@ -1,0 +1,24 @@
+name: Deployment Pipeline
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sign Payload and Deploy via Webhook
+        env:
+          SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          AUTH: ${{ secrets.AUTH_TOKEN }}
+        run: |
+          payload='{}'
+          signature=$(echo -n "$payload" | openssl dgst -sha256 -hmac "$SECRET" | sed 's/^.* //')
+
+          curl --fail --show-error --silent \
+            -X POST https://deploy.bermeb.dev/deployWeeklyCart \
+            -H "Authorization: $AUTH" \
+            -H "X-Gitea-Signature: $signature" \
+            -H "Content-Type: application/json" \
+            --data-binary "$payload"
