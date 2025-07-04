@@ -412,10 +412,32 @@
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--bg-gray);
   padding: var(--space-xl);
-  animation: slideDown 0.3s ease-out;
+  animation: slideDownPanel 0.3s ease-out;
 }
 
-@keyframes slideDown {
+@keyframes slideDownPanel {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDownInstall {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDownImport {
   from {
     opacity: 0;
     transform: translateY(-10px);
@@ -538,7 +560,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--space-md);
-  animation: slideDown 0.3s ease-out;
+  animation: slideDownInstall 0.3s ease-out;
 }
 
 .install-content {
@@ -838,7 +860,7 @@
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   margin-top: var(--space-md);
-  animation: slideDown 0.3s ease-out;
+  animation: slideDownImport 0.3s ease-out;
 }
 
 .import-options h4 {
@@ -1027,16 +1049,27 @@
   border-radius: var(--radius-lg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
-  animation: slideDown 0.3s ease-out;
+  animation: slideDownNotification 0.3s ease-out;
 }
 
-@keyframes slideDown {
+@keyframes slideDownNotification {
   from {
     transform: translateX(-50%) translateY(-100%);
     opacity: 0;
   }
   to {
     transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDownNotificationMobile {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
     opacity: 1;
   }
 }
@@ -1057,5 +1090,6 @@
     right: 10px;
     transform: none;
     text-align: center;
+    animation: slideDownNotificationMobile 0.3s ease-out;
   }
 }
