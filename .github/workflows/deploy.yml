@@ -1,4 +1,4 @@
-name: Deployment Pipeline
+name: WeeklyCart Deployment Pipeline
 on:
   push:
     branches:
@@ -6,19 +6,24 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Sign Payload and Deploy via Webhook
-        env:
-          SECRET: ${{ secrets.WEBHOOK_SECRET }}
-          AUTH: ${{ secrets.AUTH_TOKEN }}
-        run: |
-          payload='{}'
-          signature=$(echo -n "$payload" | openssl dgst -sha256 -hmac "$SECRET" | sed 's/^.* //')
-
-          curl --fail --show-error --silent \
-            -X POST https://deploy.bermeb.dev/deployWeeklyCart \
-            -H "Authorization: $AUTH" \
-            -H "X-Gitea-Signature: $signature" \
-            -H "Content-Type: application/json" \
-            --data-binary "$payload"
+    - name: Deploy WeeklyCart via Webhook
+      env:
+        SECRET: ${{ secrets.WEBHOOK_SECRET }}
+        AUTH: ${{ secrets.AUTH_TOKEN }}
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+      run: |
+        payload='{"repository":"${{ github.repository }}","ref":"${{ github.ref }}","sha":"${{ github.sha }}","project":"weeklycart"}'
+        signature=$(echo -n "$payload" | openssl dgst -sha256 -hmac "$SECRET" | sed 's/^.* //')
+        
+        echo "Sending deployment request..."
+        echo "Repository: ${{ github.repository }}"
+        echo "Commit: ${{ github.sha }}"
+        
+        curl --fail --show-error --silent \
+          -X POST $WEBHOOK_URL \
+          -H "Authorization: $AUTH" \
+          -H "X-Hub-Signature-256: sha256=$signature" \
+          -H "Content-Type: application/json" \
+          --data-binary "$payload"
