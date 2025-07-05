@@ -1,4 +1,4 @@
-import React, { useState } from "react" 
+import React, { useState, useEffect } from "react" 
 import { Plus, Edit3, Trash2, Check, X, List, Calendar, Share2 } from 'lucide-react'
 import ShareModal from './ShareModal'
 
@@ -77,6 +77,20 @@ const ListSelector = ({
     })
     const [showShareAllModal, setShowShareAllModal] = useState(false)
 
+    useEffect(() => {
+        // Clean up corrupted lists with null IDs
+        const validLists = lists.filter(list => list.id !== null && list.id !== undefined)
+        if (validLists.length !== lists.length) {
+            localStorage.setItem('shoppingLists', JSON.stringify(validLists))
+            window.location.reload()
+        }
+        
+        // Force reset all edit state on mount to prevent inconsistencies
+        setEditingListId(null)
+        setEditingName('')
+        setValidationError('')
+    }, [lists])
+
     const safeLocalStorageOperation = (operation, fallback = null) => {
         try {
             return operation()
@@ -96,7 +110,7 @@ const ListSelector = ({
 
         safeLocalStorageOperation(() => {
             onCreateList(newListName.trim())
-            handleNameChange('')
+            setNewListName('')
             setShowCreateForm(false)
             setValidationError('')
             onClose()
@@ -187,10 +201,6 @@ const ListSelector = ({
     }
 
     const validateListDeletion = (listId) => {
-        if (lists.length <= 1) {
-            return 'Die letzte Liste kann nicht gelöscht werden.'
-        }
-
         const listToDelete = lists.find(list => list.id === listId)
         if (!listToDelete) {
             return 'Liste nicht gefunden.'
@@ -206,8 +216,11 @@ const ListSelector = ({
         if (e.key === 'Escape') {
             if (editingListId) {
                 handleCancelEdit()
-            } else {
+            } else if (showCreateForm) {
                 setShowCreateForm(false)
+                setNewListName('')
+                setValidationError('')
+            } else {
                 onClose()
             }
         }
@@ -235,6 +248,7 @@ const ListSelector = ({
                     <button
                         onClick={() => setShowShareAllModal(true)}
                         className="share-all-btn"
+                        disabled={lists.length === 0}
                         aria-label="Alle Listen teilen">
                         <Share2 size={16}/>
                         Alle Listen teilen
@@ -242,7 +256,7 @@ const ListSelector = ({
                 </div>
 
                 <div className="lists-container">
-                    {lists.map(list => (
+                    {lists.filter(list => list.id !== null && list.id !== undefined).map(list => (
                         <div
                             key={list.id}
                             className={`list-item-selector ${list.id === currentListId ? 'active' : ''}`}>
@@ -252,7 +266,7 @@ const ListSelector = ({
                                     onSelectList(list.id)
                                     onClose()
                                 }}>
-                                {editingListId === list.id ? (
+                                {editingListId === list.id && editingListId !== null && list.id !== null ? (
                                     <input
                                         type="text"
                                         value={editingName}
@@ -268,20 +282,15 @@ const ListSelector = ({
                                         <div className="list-info">
                                             <span className="list-name">{list.name}</span>
                                             <span className="list-stats">
-                        {list.items.filter(item => item.checked).length} / {list.items.length} erledigt
+                        {list.items.length === 0 ? 'Liste leer...' : `${list.items.filter(item => item.checked).length} / ${list.items.length} erledigt`}
                       </span>
                                         </div>
-                                        {list.id === currentListId && (
-                                            <div className="current-indicator">
-                                                <Check size={14}/>
-                                            </div>
-                                        )}
                                     </>
                                 )}
                             </div>
 
                             <div className="list-actions">
-                                {editingListId === list.id ? (
+                                {editingListId === list.id && editingListId !== null && list.id !== null ? (
                                     <>
                                         <button
                                             onClick={handleSaveEdit}
@@ -317,17 +326,15 @@ const ListSelector = ({
                                             aria-label="Umbenennen">
                                             <Edit3 size={14}/>
                                         </button>
-                                        {lists.length > 1 && (
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    handleDeleteList(list)
-                                                }}
-                                                className="action-btn delete-btn"
-                                                aria-label="Löschen">
-                                                <Trash2 size={14}/>
-                                            </button>
-                                        )}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleDeleteList(list)
+                                            }}
+                                            className="action-btn delete-btn"
+                                            aria-label="Löschen">
+                                            <Trash2 size={14}/>
+                                        </button>
                                     </>
                                 )}
                             </div>
@@ -359,7 +366,10 @@ const ListSelector = ({
                             />
                             <div className="create-actions">
                                 <button
-                                    onClick={handleCreateList}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleCreateList()
+                                    }}
                                     disabled={!newListName.trim()}
                                     className="create-btn"
                                     aria-label="Liste erstellen">
@@ -367,9 +377,11 @@ const ListSelector = ({
                                     Erstellen
                                 </button>
                                 <button
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation()
                                         setShowCreateForm(false)
-                                        handleNameChange('')
+                                        setNewListName('')
+                                        setValidationError('')
                                     }}
                                     className="cancel-create-btn"
                                     aria-label="Abbrechen">
@@ -379,7 +391,10 @@ const ListSelector = ({
                         </div>
                     ) : (
                         <button
-                            onClick={() => setShowCreateForm(true)}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setShowCreateForm(true)
+                            }}
                             className="add-list-btn"
                             aria-label="Neue Liste erstellen">
                             <Plus size={16}/>

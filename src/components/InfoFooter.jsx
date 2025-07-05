@@ -8,8 +8,12 @@ const InfoFooter = ({autoReset, resetDay, weekDays, listsCount, onResetCurrentLi
                 <Calendar size={16} className="info-footer-calender-icon"/>
                 <span className="info-footer-resetday-text">
                     {autoReset
-                        ? `Alle ${listsCount} Listen werden automatisch jeden ${weekDays[resetDay]} zurückgesetzt`
-                        : `${listsCount} Liste${listsCount !== 1 ? 'n' : ''} - Automatisches Zurücksetzen deaktiviert`
+                        ? listsCount === 0 
+                            ? `Keine Listen - Automatisches Zurücksetzen jeden ${weekDays[resetDay]}` 
+                            : `Alle ${listsCount} Listen werden automatisch jeden ${weekDays[resetDay]} zurückgesetzt`
+                        : listsCount === 0
+                            ? 'Keine Listen - Automatisches Zurücksetzen deaktiviert'
+                            : `${listsCount} Liste${listsCount !== 1 ? 'n' : ''} - Automatisches Zurücksetzen deaktiviert`
                     }
                 </span>
             </div>

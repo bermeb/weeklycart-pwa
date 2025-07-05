@@ -24,6 +24,27 @@
   }
 }
 
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  text-align: center;
+  min-height: 400px;
+}
+
+.empty-state h2 {
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
 /* Create List Section */
 .create-list-section {
   padding: var(--space-lg) var(--space-xl);
