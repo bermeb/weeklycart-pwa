@@ -8,6 +8,16 @@ import { useMemo } from 'react'
  */
 export const useListStats = (lists, currentListId) => {
   return useMemo(() => {
+    if (lists.length === 0) {
+      return {
+        currentList: null,
+        items: [],
+        checkedCount: 0,
+        totalCount: 0,
+        progress: 0
+      }
+    }
+    
     const currentList = lists.find(list => list.id === currentListId) || lists[0]
     const items = currentList?.items || []
     const checkedCount = items.filter(item => item.checked).length
