@@ -1,5 +1,6 @@
 import React, { useState } from "react" 
-import { Plus, Edit3, Trash2, Check, X, List, Calendar } from 'lucide-react'
+import { Plus, Edit3, Trash2, Check, X, List, Calendar, Share2 } from 'lucide-react'
+import ShareModal from './ShareModal'
 
 const ConfirmationModal = ({ isOpen, onConfirm, onCancel, message }) => {
     if (!isOpen) return null 
@@ -61,7 +62,8 @@ const ListSelector = ({
                           onCreateList,
                           onRenameList,
                           onDeleteList,
-                          onClose
+                          onClose,
+                          onShareList
                       }) => {
     const [newListName, setNewListName] = useState('')
     const [showCreateForm, setShowCreateForm] = useState(false)
@@ -73,6 +75,7 @@ const ListSelector = ({
         listId: null,
         listName: ''
     })
+    const [showShareAllModal, setShowShareAllModal] = useState(false)
 
     const safeLocalStorageOperation = (operation, fallback = null) => {
         try {
@@ -223,6 +226,16 @@ const ListSelector = ({
                     </button>
                 </div>
 
+                <div className="share-all-section">
+                    <button
+                        onClick={() => setShowShareAllModal(true)}
+                        className="share-all-btn"
+                        aria-label="Alle Listen teilen">
+                        <Share2 size={16}/>
+                        Alle Listen teilen
+                    </button>
+                </div>
+
                 <div className="lists-container">
                     {lists.map(list => (
                         <div
@@ -282,6 +295,15 @@ const ListSelector = ({
                                     </>
                                 ) : (
                                     <>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                onShareList?.(list.id)
+                                            }}
+                                            className="action-btn share-btn"
+                                            aria-label="Teilen">
+                                            <Share2 size={14}/>
+                                        </button>
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation()
@@ -371,6 +393,14 @@ const ListSelector = ({
                     onConfirm={handleConfirmDelete}
                     onCancel={handleCancelDelete}
                     message={`Liste "${confirmDelete.listName}" wirklich löschen?`}
+                />
+
+                <ShareModal
+                    isOpen={showShareAllModal}
+                    onClose={() => setShowShareAllModal(false)}
+                    lists={lists}
+                    currentListId={currentListId}
+                    shareType="all"
                 />
             </div>
         </div>

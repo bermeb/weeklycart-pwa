@@ -1,8 +1,8 @@
 import React from 'react'
-import {Settings, Check, Sparkles, List, ChevronDown} from 'lucide-react'
+import {Settings, Check, Sparkles, List, ChevronDown, Share2} from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
 
-const Header = ({ progress, checkedCount, totalCount, currentListName, onSettingsClick, onListSelectorClick }) => {
+const Header = ({ progress, checkedCount, totalCount, currentListName, onSettingsClick, onListSelectorClick, onShareClick }) => {
     return (
         <div className="header">
             <div className="header-content">
@@ -16,9 +16,14 @@ const Header = ({ progress, checkedCount, totalCount, currentListName, onSetting
                             <ChevronDown size={14} />
                         </button>
                     </div>
-                    <button onClick={onSettingsClick} className="settings-btn" aria-label="Einstellungen">
-                        <Settings size={20} />
-                    </button>
+                    <div className="header-buttons">
+                        <button onClick={onShareClick} className="share-btn" aria-label="Liste teilen">
+                            <Share2 size={20} />
+                        </button>
+                        <button onClick={onSettingsClick} className="settings-btn" aria-label="Einstellungen">
+                            <Settings size={20} />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="progress-section">

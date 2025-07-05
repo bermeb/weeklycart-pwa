@@ -8,6 +8,7 @@ import AddItemForm from "./components/AddItemForm.jsx"
 import ShoppingList from "./components/ShoppingList.jsx"
 import InfoFooter from "./components/InfoFooter.jsx"
 import ListSelector from "./components/ListSelector.jsx"
+import ShareModal from "./components/ShareModal.jsx"
 import ErrorBoundary from "./components/ErrorBoundary.jsx"
 import { decodeListData } from "./utils/sharing.js"
 import { processImportedData } from "./utils/dataExport.js"
@@ -39,6 +40,8 @@ function App() {
     const [lastResetDate, setLastResetDate] = useLocalStorage('lastResetDate', new Date().toDateString())
     const [showSettings, setShowSettings] = useState(false)
     const [showListSelector, setShowListSelector] = useState(false)
+    const [showShareModal, setShowShareModal] = useState(false)
+    const [shareListId, setShareListId] = useState(null)
     const [importNotification, setImportNotification] = useState('')
 
     // Auto-Reset hook
@@ -204,6 +207,16 @@ function App() {
         }
     }
 
+    const handleShareList = (listId) => {
+        setShareListId(listId)
+        setShowShareModal(true)
+    }
+
+    const handleCloseShareModal = () => {
+        setShowShareModal(false)
+        setShareListId(null)
+    }
+
     // Calculate progress for current list
     // useMemo for optimized updating of progress
     const { checkedCount, totalCount, progress } = useMemo(() => {
@@ -236,6 +249,7 @@ function App() {
                     currentListName={currentList?.name || 'Liste'}
                     onSettingsClick={() => setShowSettings(!showSettings)}
                     onListSelectorClick={() => setShowListSelector(!showListSelector)}
+                    onShareClick={() => handleShareList(currentListId)}
                 />
             </ErrorBoundary>
 
@@ -276,6 +290,21 @@ function App() {
                         onRenameList={renameList}
                         onDeleteList={deleteList}
                         onClose={() => setShowListSelector(false)}
+                        onShareList={handleShareList}
+                    />
+                </ErrorBoundary>
+            )}
+
+            {showShareModal && (
+                <ErrorBoundary 
+                    componentName="ShareModal" 
+                    fallbackMessage="Das Teilen-Fenster konnte nicht geladen werden.">
+                    <ShareModal
+                        isOpen={showShareModal}
+                        onClose={handleCloseShareModal}
+                        lists={lists}
+                        currentListId={shareListId || currentListId}
+                        shareType="current"
                     />
                 </ErrorBoundary>
             )}
