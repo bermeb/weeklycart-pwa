@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import {Calendar, RefreshCw, Settings, Upload, FileText, FileDown, Share2, QrCode} from 'lucide-react'
+import {Calendar, RefreshCw, Settings, Upload, FileText, FileDown} from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
 import { 
     exportListsToJSON, 
@@ -9,12 +9,6 @@ import {
     importListsFromJSON,
     processImportedData 
 } from '../utils/dataExport'
-import {
-    shareViaWebShare,
-    copyShareUrl,
-    generateQRCode,
-    isWebShareSupported
-} from '../utils/sharing'
 
 const SettingsPanel = ({
                            autoReset,
@@ -31,10 +25,7 @@ const SettingsPanel = ({
     const [importStatus, setImportStatus] = useState('')
     const [showImportOptions, setShowImportOptions] = useState(false)
     const [showReplaceConfirm, setShowReplaceConfirm] = useState(false)
-    const [showQRCode, setShowQRCode] = useState(false)
-    const [qrCodeUrl, setQrCodeUrl] = useState('')
     const [pendingImportData, setPendingImportData] = useState(null)
-    const [isGeneratingQR, setIsGeneratingQR] = useState(false)
     const fileInputRef = useRef(null)
 
     const handleExportAllJSON = () => {
@@ -65,101 +56,6 @@ const SettingsPanel = ({
         }
     }
 
-    // Mobile sharing handlers
-    const handleShareAllLists = async () => {
-        const shareData = {
-            version: '1.0',
-            exportDate: new Date().toISOString(),
-            lists: lists.map(list => ({
-                name: list.name,
-                items: list.items.map(item => ({
-                    name: item.name,
-                    amount: item.amount
-                }))
-            }))
-        }
-
-        try {
-            if (isWebShareSupported()) {
-                await shareViaWebShare(shareData, false)
-                setImportStatus('Listen geteilt')
-            } else {
-                await copyShareUrl(shareData)
-                setImportStatus('Share-Link kopiert')
-            }
-            setTimeout(() => setImportStatus(''), 3000)
-        } catch {
-            setImportStatus('Fehler beim Teilen')
-            setTimeout(() => setImportStatus(''), 3000)
-        }
-    }
-
-    const handleShareCurrentList = async () => {
-        if (!currentList) return
-        
-        const shareData = {
-            version: '1.0',
-            exportDate: new Date().toISOString(),
-            list: {
-                name: currentList.name,
-                items: currentList.items.map(item => ({
-                    name: item.name,
-                    amount: item.amount
-                }))
-            }
-        }
-
-        try {
-            if (isWebShareSupported()) {
-                await shareViaWebShare(shareData, true)
-                setImportStatus('Liste geteilt')
-            } else {
-                await copyShareUrl(shareData)
-                setImportStatus('Share-Link kopiert')
-            }
-            setTimeout(() => setImportStatus(''), 3000)
-        } catch {
-            setImportStatus('Fehler beim Teilen')
-            setTimeout(() => setImportStatus(''), 3000)
-        }
-    }
-
-    const handleShowQRCode = async (isSingleList = false) => {
-        const shareData = isSingleList ? {
-            version: '1.0',
-            exportDate: new Date().toISOString(),
-            list: {
-                name: currentList.name,
-                items: currentList.items.map(item => ({
-                    name: item.name,
-                    amount: item.amount
-                }))
-            }
-        } : {
-            version: '1.0',
-            exportDate: new Date().toISOString(),
-            lists: lists.map(list => ({
-                name: list.name,
-                items: list.items.map(item => ({
-                    name: item.name,
-                    amount: item.amount
-                }))
-            }))
-        }
-
-        setIsGeneratingQR(true)
-        
-        try {
-            const qrUrl = await generateQRCode(shareData)
-            setQrCodeUrl(qrUrl)
-            setShowQRCode(true)
-        } catch (error) {
-            setImportStatus(`QR-Code Fehler: ${error.message}`)
-            setTimeout(() => setImportStatus(''), 5000)
-        } finally {
-            setIsGeneratingQR(false)
-        }
-    }
 
     const handleImportClick = () => {
         fileInputRef.current?.click()
@@ -294,48 +190,12 @@ const SettingsPanel = ({
 
             <div className="settings-header">
                 <h3 className="settings-title">
-                    <Share2 size={18}/>
-                    Listen teilen & importieren
+                    <FileDown size={18}/>
+                    Backup & Import
                 </h3>
             </div>
 
             <div className="export-buttons">
-                <div className="export-section">
-                    <h4 className="export-section-title">Alle Listen teilen</h4>
-                    <div className="export-button-group">
-                        <button onClick={handleShareAllLists} className="export-btn share-btn">
-                            <Share2 size={16}/>
-                            {isWebShareSupported() ? 'Teilen' : 'Link kopieren'}
-                        </button>
-                        <button 
-                            onClick={() => handleShowQRCode(false)} 
-                            className="export-btn"
-                            disabled={isGeneratingQR}>
-                            <QrCode size={16}/>
-                            {isGeneratingQR ? 'Erstelle...' : 'QR-Code'}
-                        </button>
-                    </div>
-                </div>
-
-                {currentList && (
-                    <div className="export-section">
-                        <h4 className="export-section-title">Aktuelle Liste teilen</h4>
-                        <div className="export-button-group">
-                            <button onClick={handleShareCurrentList} className="export-btn share-btn">
-                                <Share2 size={16}/>
-                                {isWebShareSupported() ? 'Teilen' : 'Link kopieren'}
-                            </button>
-                            <button 
-                                onClick={() => handleShowQRCode(true)} 
-                                className="export-btn"
-                                disabled={isGeneratingQR}>
-                                <QrCode size={16}/>
-                                {isGeneratingQR ? 'Erstelle...' : 'QR-Code'}
-                            </button>
-                        </div>
-                    </div>
-                )}
-
                 <div className="export-section">
                     <h4 className="export-section-title">Backup-Export (Datei)</h4>
                     <div className="export-button-group">
@@ -378,7 +238,10 @@ const SettingsPanel = ({
             </div>
 
             {importStatus && (
-                <div className={`import-status ${importStatus.includes('Fehler') ? 'error' : 'success'}`}>
+                <div 
+                    className={`import-status ${importStatus.includes('Fehler') ? 'error' : 'success'}`}
+                    role={importStatus.includes('Fehler') ? 'alert' : 'status'}
+                    aria-live="polite">
                     {importStatus}
                 </div>
             )}
@@ -433,24 +296,6 @@ const SettingsPanel = ({
                 </div>
             )}
 
-            {showQRCode && (
-                <div className="qr-modal">
-                    <div className="qr-modal-content">
-                        <h4>QR-Code zum Teilen</h4>
-                        <p>Scannen Sie diesen QR-Code, um die Liste zu importieren:</p>
-                        <div className="qr-code-container">
-                            <img src={qrCodeUrl} alt="QR Code" className="qr-code-image" />
-                        </div>
-                        <div className="qr-modal-buttons">
-                            <button 
-                                onClick={() => setShowQRCode(false)} 
-                                className="import-option-btn cancel">
-                                Schließen
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

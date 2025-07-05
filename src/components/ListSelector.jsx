@@ -1,5 +1,6 @@
 import React, { useState } from "react" 
-import { Plus, Edit3, Trash2, Check, X, List, Calendar } from 'lucide-react'
+import { Plus, Edit3, Trash2, Check, X, List, Calendar, Share2 } from 'lucide-react'
+import ShareModal from './ShareModal'
 
 const ConfirmationModal = ({ isOpen, onConfirm, onCancel, message }) => {
     if (!isOpen) return null 
@@ -61,7 +62,8 @@ const ListSelector = ({
                           onCreateList,
                           onRenameList,
                           onDeleteList,
-                          onClose
+                          onClose,
+                          onShareList
                       }) => {
     const [newListName, setNewListName] = useState('')
     const [showCreateForm, setShowCreateForm] = useState(false)
@@ -73,6 +75,7 @@ const ListSelector = ({
         listId: null,
         listName: ''
     })
+    const [showShareAllModal, setShowShareAllModal] = useState(false)
 
     const safeLocalStorageOperation = (operation, fallback = null) => {
         try {
@@ -211,15 +214,30 @@ const ListSelector = ({
     }
 
     return (
-        <div className="list-selector-overlay" onClick={onClose}>
+        <div 
+            className="list-selector-overlay" 
+            onClick={onClose}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="list-selector-title">
             <div className="list-selector-panel" onClick={(e) => e.stopPropagation()}>
                 <div className="list-selector-header">
-                    <h3 className="list-selector-title">
+                    <h3 id="list-selector-title" className="list-selector-title">
                         <List size={18}/>
                         Meine Listen
                     </h3>
-                    <button onClick={onClose} className="close-btn" aria-label="Schließen">
+                    <button onClick={onClose} className="close-btn" aria-label="Listen-Auswahl schließen">
                         <X size={18}/>
+                    </button>
+                </div>
+
+                <div className="share-all-section">
+                    <button
+                        onClick={() => setShowShareAllModal(true)}
+                        className="share-all-btn"
+                        aria-label="Alle Listen teilen">
+                        <Share2 size={16}/>
+                        Alle Listen teilen
                     </button>
                 </div>
 
@@ -227,8 +245,7 @@ const ListSelector = ({
                     {lists.map(list => (
                         <div
                             key={list.id}
-                            className={`list-item-selector ${list.id === currentListId ? 'active' : ''}`}
-                        >
+                            className={`list-item-selector ${list.id === currentListId ? 'active' : ''}`}>
                             <div
                                 className="list-item-content"
                                 onClick={() => {
@@ -285,6 +302,15 @@ const ListSelector = ({
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation()
+                                                onShareList?.(list.id)
+                                            }}
+                                            className="action-btn share-btn"
+                                            aria-label="Teilen">
+                                            <Share2 size={14}/>
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
                                                 handleStartEdit(list)
                                             }}
                                             className="action-btn edit-btn"
@@ -310,7 +336,10 @@ const ListSelector = ({
                 </div>
 
                 {validationError && (
-                    <div className="validation-error">
+                    <div 
+                        className="validation-error"
+                        role="alert"
+                        aria-live="polite">
                         {validationError}
                     </div>
                 )}
@@ -371,6 +400,14 @@ const ListSelector = ({
                     onConfirm={handleConfirmDelete}
                     onCancel={handleCancelDelete}
                     message={`Liste "${confirmDelete.listName}" wirklich löschen?`}
+                />
+
+                <ShareModal
+                    isOpen={showShareAllModal}
+                    onClose={() => setShowShareAllModal(false)}
+                    lists={lists}
+                    currentListId={currentListId}
+                    shareType="all"
                 />
             </div>
         </div>

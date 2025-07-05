@@ -1,3 +1,5 @@
+import { downloadFile, generateTimestampedFilename } from './fileDownload.js'
+
 export const exportListsToJSON = (lists) => {
   const exportData = {
     version: '1.0',
@@ -12,17 +14,8 @@ export const exportListsToJSON = (lists) => {
   }
   
   const jsonString = JSON.stringify(exportData, null, 2)
-  const blob = new Blob([jsonString], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  
-  const fileName = generateFileName('shopping-lists', 'json')
-  const link = document.createElement('a')
-  link.href = url
-  link.download = fileName
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  const fileName = generateTimestampedFilename('shopping-lists', 'json')
+  downloadFile(jsonString, fileName, 'application/json')
 }
 
 export const exportListsToText = (lists) => {
@@ -45,17 +38,8 @@ export const exportListsToText = (lists) => {
     textContent += '\n'
   })
   
-  const blob = new Blob([textContent], { type: 'text/plain' })
-  const url = URL.createObjectURL(blob)
-  
-  const fileName = generateFileName('shopping-lists', 'txt')
-  const link = document.createElement('a')
-  link.href = url
-  link.download = fileName
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  const fileName = generateTimestampedFilename('shopping-lists', 'txt')
+  downloadFile(textContent, fileName, 'text/plain')
 }
 
 export const exportSingleListToJSON = (list) => {
@@ -72,17 +56,8 @@ export const exportSingleListToJSON = (list) => {
   }
   
   const jsonString = JSON.stringify(exportData, null, 2)
-  const blob = new Blob([jsonString], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  
-  const fileName = generateFileName(`list-${list.name.replace(/[^a-zA-Z0-9]/g, '-')}`, 'json')
-  const link = document.createElement('a')
-  link.href = url
-  link.download = fileName
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  const fileName = generateTimestampedFilename(`list-${list.name.replace(/[^a-zA-Z0-9]/g, '-')}`, 'json')
+  downloadFile(jsonString, fileName, 'application/json')
 }
 
 export const exportSingleListToText = (list) => {
@@ -99,17 +74,8 @@ export const exportSingleListToText = (list) => {
     textContent += '\n'
   })
   
-  const blob = new Blob([textContent], { type: 'text/plain' })
-  const url = URL.createObjectURL(blob)
-  
-  const fileName = generateFileName(`list-${list.name.replace(/[^a-zA-Z0-9]/g, '-')}`, 'txt')
-  const link = document.createElement('a')
-  link.href = url
-  link.download = fileName
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  const fileName = generateTimestampedFilename(`list-${list.name.replace(/[^a-zA-Z0-9]/g, '-')}`, 'txt')
+  downloadFile(textContent, fileName, 'text/plain')
 }
 
 import { validateImportData } from './validation.js'
@@ -140,12 +106,6 @@ export const importListsFromJSON = async (file) => {
     
     reader.readAsText(file)
   })
-}
-
-
-export const generateFileName = (baseName, extension) => {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
-  return `${baseName}-${timestamp}.${extension}`
 }
 
 export const processImportedData = (importedData, currentLists, mergeStrategy = 'append') => {

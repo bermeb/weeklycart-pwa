@@ -13,6 +13,24 @@ export const VALIDATION_LIMITS = {
 }
 
 /**
+ * Validates input length before processing
+ * @param {string} input - The string to validate
+ * @param {number} maxLength - Maximum allowed length
+ * @returns {{isValid: boolean, error?: string}} Validation result
+ */
+export const validateInputLength = (input, maxLength = VALIDATION_LIMITS.MAX_STRING_LENGTH) => {
+  if (typeof input !== 'string') {
+    return { isValid: false, error: 'Input must be a string' }
+  }
+  
+  if (input.length > maxLength) {
+    return { isValid: false, error: `Input exceeds maximum length of ${maxLength} characters` }
+  }
+  
+  return { isValid: true }
+}
+
+/**
  * Sanitizes and validates a string input
  * @param {string} input - The string to sanitize
  * @param {number} maxLength - Maximum allowed length
@@ -21,6 +39,12 @@ export const VALIDATION_LIMITS = {
 export const sanitizeString = (input, maxLength = VALIDATION_LIMITS.MAX_STRING_LENGTH) => {
   if (typeof input !== 'string') {
     return ''
+  }
+  
+  // Validate length first
+  const lengthValidation = validateInputLength(input, maxLength)
+  if (!lengthValidation.isValid) {
+    console.warn('Input length validation failed:', lengthValidation.error)
   }
   
   // Remove HTML tags and limit length
@@ -197,15 +221,21 @@ export const checkNetworkConnectivity = async () => {
   }
 
   try {
-    // Quick connectivity check with a small request
+    // Quick connectivity check with a small request and proper timeout handling
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 3000)
+    
     await fetch('https://api.qrserver.com/v1/create-qr-code/?size=1x1&data=test', {
       method: 'HEAD',
       mode: 'no-cors',
       cache: 'no-cache',
-      timeout: 3000
+      signal: controller.signal
     })
+    
+    clearTimeout(timeoutId)
     return true
   } catch {
+    // Handles both network errors and timeout aborts
     return false
   }
 }

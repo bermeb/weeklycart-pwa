@@ -1,6 +1,7 @@
-import React, {useMemo, useState, useEffect} from "react"
+import React, {useState, useEffect} from "react"
 import {useLocalStorage} from "./hooks/useLocalStorage.js"
 import {useAutoReset} from "./hooks/useAutoReset.js"
+import {useListStats} from "./hooks/useListStats.js"
 import InstallPrompt from "./components/InstallPrompt.jsx"
 import Header from "./components/Header.jsx"
 import SettingsPanel from "./components/SettingsPanel.jsx"
@@ -8,6 +9,7 @@ import AddItemForm from "./components/AddItemForm.jsx"
 import ShoppingList from "./components/ShoppingList.jsx"
 import InfoFooter from "./components/InfoFooter.jsx"
 import ListSelector from "./components/ListSelector.jsx"
+import ShareModal from "./components/ShareModal.jsx"
 import ErrorBoundary from "./components/ErrorBoundary.jsx"
 import { decodeListData } from "./utils/sharing.js"
 import { processImportedData } from "./utils/dataExport.js"
@@ -39,6 +41,8 @@ function App() {
     const [lastResetDate, setLastResetDate] = useLocalStorage('lastResetDate', new Date().toDateString())
     const [showSettings, setShowSettings] = useState(false)
     const [showListSelector, setShowListSelector] = useState(false)
+    const [showShareModal, setShowShareModal] = useState(false)
+    const [shareListId, setShareListId] = useState(null)
     const [importNotification, setImportNotification] = useState('')
 
     // Auto-Reset hook
@@ -80,8 +84,8 @@ function App() {
         }
     }, [lists, setLists])
 
-    const currentList = lists.find(list => list.id === currentListId) || lists[0]
-    const items = useMemo(() => currentList?.items || [], [currentList?.items])
+    // Use custom hook for performance optimization
+    const { currentList, items, checkedCount, totalCount, progress } = useListStats(lists, currentListId)
 
     // Toggle item checked status (manual reset/check individual items)
     const toggleItem = (id) => {
@@ -204,20 +208,15 @@ function App() {
         }
     }
 
-    // Calculate progress for current list
-    // useMemo for optimized updating of progress
-    const { checkedCount, totalCount, progress } = useMemo(() => {
-        const checked = items.filter(item => item.checked).length
-        const total = items.length
-        const progressPercent = total > 0 ? (checked / total) * 100 : 0
+    const handleShareList = (listId) => {
+        setShareListId(listId)
+        setShowShareModal(true)
+    }
 
-        return {
-            checkedCount: checked,
-            totalCount: total,
-            progress: progressPercent
-        }
-    }, [items])
-
+    const handleCloseShareModal = () => {
+        setShowShareModal(false)
+        setShareListId(null)
+    }
     return (
         <div className="app">
             <ErrorBoundary 
@@ -236,11 +235,15 @@ function App() {
                     currentListName={currentList?.name || 'Liste'}
                     onSettingsClick={() => setShowSettings(!showSettings)}
                     onListSelectorClick={() => setShowListSelector(!showListSelector)}
+                    onShareClick={() => handleShareList(currentListId)}
                 />
             </ErrorBoundary>
 
             {importNotification && (
-                <div className="import-notification">
+                <div 
+                    className="import-notification"
+                    role={importNotification.includes('Fehler') || importNotification.includes('failed') ? 'alert' : 'status'}
+                    aria-live="polite">
                     {importNotification}
                 </div>
             )}
@@ -276,6 +279,21 @@ function App() {
                         onRenameList={renameList}
                         onDeleteList={deleteList}
                         onClose={() => setShowListSelector(false)}
+                        onShareList={handleShareList}
+                    />
+                </ErrorBoundary>
+            )}
+
+            {showShareModal && (
+                <ErrorBoundary 
+                    componentName="ShareModal" 
+                    fallbackMessage="Das Teilen-Fenster konnte nicht geladen werden.">
+                    <ShareModal
+                        isOpen={showShareModal}
+                        onClose={handleCloseShareModal}
+                        lists={lists}
+                        currentListId={shareListId || currentListId}
+                        shareType="current"
                     />
                 </ErrorBoundary>
             )}

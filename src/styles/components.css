@@ -1,5 +1,18 @@
 /* Reusable component styles */
 
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Buttons */
 .btn {
   border: none;
@@ -754,6 +767,34 @@
   background: var(--primary-blue-dark);
 }
 
+/* Share All Lists Section */
+.share-all-section {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--bg-gray);
+}
+
+.share-all-btn {
+  width: 100%;
+  background: var(--success-green-light);
+  color: var(--text-light);
+  border: none;
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  transition: var(--transition-fast);
+}
+
+.share-all-btn:hover {
+  background: var(--success-green);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
 /* Export/Import Styles */
 .settings-divider {
   border-top: 1px solid var(--bg-gray);
@@ -974,6 +1015,159 @@
 
 .share-btn:hover {
   background: var(--success-green-dark) !important;
+}
+
+.action-btn.share-btn {
+  color: var(--success-green) !important;
+  background: none !important;
+}
+
+.action-btn.share-btn:hover {
+  color: var(--success-green-dark) !important;
+  background: var(--success-bg) !important;
+}
+
+/* Share Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border-radius: var(--radius-2xl);
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xl);
+  border-bottom: 1px solid var(--bg-gray);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-xs);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.share-options {
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.share-option-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  border: 2px solid var(--bg-gray);
+  border-radius: var(--radius-xl);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+.share-option-btn.primary {
+  background: var(--success-green);
+  color: white;
+  border-color: var(--success-green);
+}
+
+.share-option-btn.primary:hover {
+  background: var(--success-green-dark);
+  border-color: var(--success-green-dark);
+  transform: translateY(-1px);
+}
+
+.share-option-btn.secondary:hover {
+  border-color: var(--bg-gray-dark);
+  background: var(--bg-secondary);
+  transform: translateY(-1px);
+}
+
+.share-option-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.qr-code-section {
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.qr-code-container {
+  margin: var(--space-lg) 0;
+  display: flex;
+  justify-content: center;
+}
+
+.qr-code-image {
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.qr-code-section p {
+  color: var(--text-secondary);
+  margin: var(--space-md) 0;
+}
+
+.share-status {
+  padding: var(--space-md) var(--space-xl);
+  text-align: center;
+  font-weight: 500;
+  border-top: 1px solid var(--bg-gray);
+}
+
+.share-status.success {
+  color: var(--success-green);
+  background: var(--success-bg);
+}
+
+.share-status.error {
+  color: var(--error-red);
+  background: var(--error-bg);
 }
 
 .backup-btn {
