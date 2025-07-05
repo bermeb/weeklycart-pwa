@@ -238,7 +238,10 @@ const SettingsPanel = ({
             </div>
 
             {importStatus && (
-                <div className={`import-status ${importStatus.includes('Fehler') ? 'error' : 'success'}`}>
+                <div 
+                    className={`import-status ${importStatus.includes('Fehler') ? 'error' : 'success'}`}
+                    role={importStatus.includes('Fehler') ? 'alert' : 'status'}
+                    aria-live="polite">
                     {importStatus}
                 </div>
             )}

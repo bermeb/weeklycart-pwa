@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Share2, QrCode, Copy, X } from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
 import {
@@ -13,6 +13,60 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
     const [qrCodeUrl, setQrCodeUrl] = useState('')
     const [isGeneratingQR, setIsGeneratingQR] = useState(false)
     const [shareStatus, setShareStatus] = useState('')
+    const modalRef = useRef(null)
+    const firstFocusableRef = useRef(null)
+
+    // Focus management and keyboard navigation
+    useEffect(() => {
+        if (isOpen) {
+            // Focus the first focusable element
+            setTimeout(() => {
+                if (firstFocusableRef.current) {
+                    firstFocusableRef.current.focus()
+                }
+            }, 100)
+        }
+    }, [isOpen])
+
+    // Handle keyboard navigation
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (!isOpen) return
+
+            if (event.key === 'Escape') {
+                onClose()
+            }
+
+            if (event.key === 'Tab') {
+                // Get all focusable elements
+                const focusableElements = modalRef.current?.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                )
+                
+                if (focusableElements && focusableElements.length > 0) {
+                    const firstElement = focusableElements[0]
+                    const lastElement = focusableElements[focusableElements.length - 1]
+
+                    if (event.shiftKey) {
+                        // Shift + Tab
+                        if (document.activeElement === firstElement) {
+                            lastElement.focus()
+                            event.preventDefault()
+                        }
+                    } else {
+                        // Tab
+                        if (document.activeElement === lastElement) {
+                            firstElement.focus()
+                            event.preventDefault()
+                        }
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyDown)
+        return () => document.removeEventListener('keydown', handleKeyDown)
+    }, [isOpen, onClose])
 
     if (!isOpen) return null
 
@@ -96,41 +150,69 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
     }
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div 
+            className="modal-overlay" 
+            onClick={onClose}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="share-modal-title"
+            aria-describedby="share-modal-description">
+            <div 
+                className="modal-content" 
+                onClick={(e) => e.stopPropagation()}
+                ref={modalRef}>
                 <div className="modal-header">
-                    <h3>{getModalTitle()}</h3>
-                    <button onClick={onClose} className="modal-close-btn">
+                    <h3 id="share-modal-title">{getModalTitle()}</h3>
+                    <button 
+                        onClick={onClose} 
+                        className="modal-close-btn"
+                        aria-label="Modal schließen"
+                        ref={firstFocusableRef}>
                         <X size={20} />
                     </button>
                 </div>
 
                 {!showQRCode ? (
-                    <div className="share-options">
-                        <button onClick={handleShare} className="share-option-btn primary">
+                    <div className="share-options" id="share-modal-description">
+                        <p>Wählen Sie eine Option zum Teilen:</p>
+                        <button 
+                            onClick={handleShare} 
+                            className="share-option-btn primary"
+                            aria-describedby="share-btn-description">
                             <Share2 size={16} />
                             <span>{isWebShareSupported() ? 'Teilen' : 'Link kopieren'}</span>
                         </button>
+                        <div id="share-btn-description" className="sr-only">
+                            {isWebShareSupported() ? 'Teilt die Liste über das System-Menü' : 'Kopiert den Share-Link in die Zwischenablage'}
+                        </div>
                         
                         <button 
                             onClick={handleShowQRCode} 
                             className="share-option-btn secondary"
                             disabled={isGeneratingQR}
-                        >
+                            aria-describedby="qr-btn-description">
                             <QrCode size={16} />
                             <span>{isGeneratingQR ? 'Erstelle...' : 'QR-Code anzeigen'}</span>
                         </button>
+                        <div id="qr-btn-description" className="sr-only">
+                            Erstellt einen QR-Code zum Scannen mit dem Smartphone
+                        </div>
                     </div>
                 ) : (
                     <div className="qr-code-section">
                         <div className="qr-code-container">
-                            <img src={qrCodeUrl} alt="QR Code" className="qr-code-image" />
+                            <img 
+                                src={qrCodeUrl} 
+                                alt={`QR Code für ${getModalTitle()}`} 
+                                className="qr-code-image"
+                                role="img"
+                                aria-describedby="qr-instructions"/>
                         </div>
-                        <p>Scannen Sie diesen QR-Code, um die Liste zu importieren</p>
+                        <p id="qr-instructions">Scannen Sie diesen QR-Code, um die Liste zu importieren</p>
                         <button 
                             onClick={() => setShowQRCode(false)} 
                             className="share-option-btn secondary"
-                        >
+                            aria-label="Zurück zu den Teilen-Optionen">
                             <Copy size={16} />
                             Zurück zu den Optionen
                         </button>
@@ -138,7 +220,10 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
                 )}
 
                 {shareStatus && (
-                    <div className={`share-status ${shareStatus.includes('Fehler') ? 'error' : 'success'}`}>
+                    <div 
+                        className={`share-status ${shareStatus.includes('Fehler') ? 'error' : 'success'}`}
+                        role={shareStatus.includes('Fehler') ? 'alert' : 'status'}
+                        aria-live="polite">
                         {shareStatus}
                     </div>
                 )}

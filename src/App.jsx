@@ -1,6 +1,7 @@
-import React, {useMemo, useState, useEffect} from "react"
+import React, {useState, useEffect} from "react"
 import {useLocalStorage} from "./hooks/useLocalStorage.js"
 import {useAutoReset} from "./hooks/useAutoReset.js"
+import {useListStats} from "./hooks/useListStats.js"
 import InstallPrompt from "./components/InstallPrompt.jsx"
 import Header from "./components/Header.jsx"
 import SettingsPanel from "./components/SettingsPanel.jsx"
@@ -83,8 +84,8 @@ function App() {
         }
     }, [lists, setLists])
 
-    const currentList = lists.find(list => list.id === currentListId) || lists[0]
-    const items = useMemo(() => currentList?.items || [], [currentList?.items])
+    // Use custom hook for performance optimization
+    const { currentList, items, checkedCount, totalCount, progress } = useListStats(lists, currentListId)
 
     // Toggle item checked status (manual reset/check individual items)
     const toggleItem = (id) => {
@@ -216,21 +217,6 @@ function App() {
         setShowShareModal(false)
         setShareListId(null)
     }
-
-    // Calculate progress for current list
-    // useMemo for optimized updating of progress
-    const { checkedCount, totalCount, progress } = useMemo(() => {
-        const checked = items.filter(item => item.checked).length
-        const total = items.length
-        const progressPercent = total > 0 ? (checked / total) * 100 : 0
-
-        return {
-            checkedCount: checked,
-            totalCount: total,
-            progress: progressPercent
-        }
-    }, [items])
-
     return (
         <div className="app">
             <ErrorBoundary 
@@ -254,7 +240,10 @@ function App() {
             </ErrorBoundary>
 
             {importNotification && (
-                <div className="import-notification">
+                <div 
+                    className="import-notification"
+                    role={importNotification.includes('Fehler') || importNotification.includes('failed') ? 'alert' : 'status'}
+                    aria-live="polite">
                     {importNotification}
                 </div>
             )}
