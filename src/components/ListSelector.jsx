@@ -96,7 +96,7 @@ const ListSelector = ({
 
         safeLocalStorageOperation(() => {
             onCreateList(newListName.trim())
-            handleNameChange('')
+            setNewListName('')
             setShowCreateForm(false)
             setValidationError('')
             onClose()
@@ -187,10 +187,6 @@ const ListSelector = ({
     }
 
     const validateListDeletion = (listId) => {
-        if (lists.length <= 1) {
-            return 'Die letzte Liste kann nicht gelöscht werden.'
-        }
-
         const listToDelete = lists.find(list => list.id === listId)
         if (!listToDelete) {
             return 'Liste nicht gefunden.'
@@ -206,8 +202,11 @@ const ListSelector = ({
         if (e.key === 'Escape') {
             if (editingListId) {
                 handleCancelEdit()
-            } else {
+            } else if (showCreateForm) {
                 setShowCreateForm(false)
+                setNewListName('')
+                setValidationError('')
+            } else {
                 onClose()
             }
         }
@@ -317,17 +316,15 @@ const ListSelector = ({
                                             aria-label="Umbenennen">
                                             <Edit3 size={14}/>
                                         </button>
-                                        {lists.length > 1 && (
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    handleDeleteList(list)
-                                                }}
-                                                className="action-btn delete-btn"
-                                                aria-label="Löschen">
-                                                <Trash2 size={14}/>
-                                            </button>
-                                        )}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleDeleteList(list)
+                                            }}
+                                            className="action-btn delete-btn"
+                                            aria-label="Löschen">
+                                            <Trash2 size={14}/>
+                                        </button>
                                     </>
                                 )}
                             </div>
@@ -369,7 +366,8 @@ const ListSelector = ({
                                 <button
                                     onClick={() => {
                                         setShowCreateForm(false)
-                                        handleNameChange('')
+                                        setNewListName('')
+                                        setValidationError('')
                                     }}
                                     className="cancel-create-btn"
                                     aria-label="Abbrechen">

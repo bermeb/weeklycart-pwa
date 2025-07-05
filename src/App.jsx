@@ -86,6 +86,9 @@ function App() {
 
     // Use custom hook for performance optimization
     const { currentList, items, checkedCount, totalCount, progress } = useListStats(lists, currentListId)
+    
+    // Handle empty lists state
+    const hasLists = lists.length > 0
 
     // Toggle item checked status (manual reset/check individual items)
     const toggleItem = (id) => {
@@ -168,14 +171,12 @@ function App() {
     }
 
     const deleteList = (id) => {
-        if (lists.length <= 1) return // Don't delete the last list
-
         setLists(prev => prev.filter(list => list.id !== id))
 
-        // If deleting current list, switch to first remaining list
+        // If deleting current list, switch to first remaining list or clear selection
         if (id === currentListId) {
             const remainingLists = lists.filter(list => list.id !== id)
-            setCurrentListId(remainingLists[0]?.id || 1)
+            setCurrentListId(remainingLists[0]?.id || null)
         }
     }
 
@@ -216,6 +217,17 @@ function App() {
     const handleCloseShareModal = () => {
         setShowShareModal(false)
         setShareListId(null)
+    }
+
+    const createNewList = () => {
+        const newList = {
+            id: Date.now(),
+            name: 'Neue Liste',
+            items: [],
+            createdAt: new Date().toISOString()
+        }
+        setLists([newList])
+        setCurrentListId(newList.id)
     }
     return (
         <div className="app">
@@ -298,22 +310,34 @@ function App() {
                 </ErrorBoundary>
             )}
 
-            <ErrorBoundary 
-                componentName="AddItemForm" 
-                fallbackMessage="Das Formular konnte nicht geladen werden.">
-                <AddItemForm onAddItem={addItem} />
-            </ErrorBoundary>
+            {hasLists ? (
+                <>
+                    <ErrorBoundary 
+                        componentName="AddItemForm" 
+                        fallbackMessage="Das Formular konnte nicht geladen werden.">
+                        <AddItemForm onAddItem={addItem} />
+                    </ErrorBoundary>
 
-            <ErrorBoundary 
-                componentName="ShoppingList" 
-                fallbackMessage="Die Einkaufsliste konnte nicht geladen werden.">
-                <ShoppingList
-                    items={items}
-                    onToggleItem={toggleItem}
-                    onDeleteItem={deleteItem}
-                    onEditItem={editItem}
-                />
-            </ErrorBoundary>
+                    <ErrorBoundary 
+                        componentName="ShoppingList" 
+                        fallbackMessage="Die Einkaufsliste konnte nicht geladen werden.">
+                        <ShoppingList
+                            items={items}
+                            onToggleItem={toggleItem}
+                            onDeleteItem={deleteItem}
+                            onEditItem={editItem}
+                        />
+                    </ErrorBoundary>
+                </>
+            ) : (
+                <div className="empty-state">
+                    <h2>Keine Listen vorhanden</h2>
+                    <p>Du hast noch keine Einkaufslisten erstellt.</p>
+                    <button onClick={createNewList} className="btn btn-primary">
+                        Erste Liste erstellen
+                    </button>
+                </div>
+            )}
 
             <ErrorBoundary 
                 componentName="InfoFooter" 
