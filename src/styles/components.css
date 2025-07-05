@@ -404,11 +404,6 @@
   color: var(--text-secondary);
 }
 
-.current-indicator {
-  color: var(--primary-blue);
-  flex-shrink: 0;
-}
-
 .list-actions {
   display: flex;
   gap: 4px;

@@ -1,4 +1,4 @@
-import React, { useState } from "react" 
+import React, { useState, useEffect } from "react" 
 import { Plus, Edit3, Trash2, Check, X, List, Calendar, Share2 } from 'lucide-react'
 import ShareModal from './ShareModal'
 
@@ -76,6 +76,20 @@ const ListSelector = ({
         listName: ''
     })
     const [showShareAllModal, setShowShareAllModal] = useState(false)
+
+    useEffect(() => {
+        // Clean up corrupted lists with null IDs
+        const validLists = lists.filter(list => list.id !== null && list.id !== undefined)
+        if (validLists.length !== lists.length) {
+            localStorage.setItem('shoppingLists', JSON.stringify(validLists))
+            window.location.reload()
+        }
+        
+        // Force reset all edit state on mount to prevent inconsistencies
+        setEditingListId(null)
+        setEditingName('')
+        setValidationError('')
+    }, [lists])
 
     const safeLocalStorageOperation = (operation, fallback = null) => {
         try {
@@ -241,7 +255,7 @@ const ListSelector = ({
                 </div>
 
                 <div className="lists-container">
-                    {lists.map(list => (
+                    {lists.filter(list => list.id !== null && list.id !== undefined).map(list => (
                         <div
                             key={list.id}
                             className={`list-item-selector ${list.id === currentListId ? 'active' : ''}`}>
@@ -251,7 +265,7 @@ const ListSelector = ({
                                     onSelectList(list.id)
                                     onClose()
                                 }}>
-                                {editingListId === list.id ? (
+                                {editingListId === list.id && editingListId !== null && list.id !== null ? (
                                     <input
                                         type="text"
                                         value={editingName}
@@ -270,17 +284,12 @@ const ListSelector = ({
                         {list.items.filter(item => item.checked).length} / {list.items.length} erledigt
                       </span>
                                         </div>
-                                        {list.id === currentListId && (
-                                            <div className="current-indicator">
-                                                <Check size={14}/>
-                                            </div>
-                                        )}
                                     </>
                                 )}
                             </div>
 
                             <div className="list-actions">
-                                {editingListId === list.id ? (
+                                {editingListId === list.id && editingListId !== null && list.id !== null ? (
                                     <>
                                         <button
                                             onClick={handleSaveEdit}
@@ -356,7 +365,10 @@ const ListSelector = ({
                             />
                             <div className="create-actions">
                                 <button
-                                    onClick={handleCreateList}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleCreateList()
+                                    }}
                                     disabled={!newListName.trim()}
                                     className="create-btn"
                                     aria-label="Liste erstellen">
@@ -364,7 +376,8 @@ const ListSelector = ({
                                     Erstellen
                                 </button>
                                 <button
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation()
                                         setShowCreateForm(false)
                                         setNewListName('')
                                         setValidationError('')
@@ -377,7 +390,10 @@ const ListSelector = ({
                         </div>
                     ) : (
                         <button
-                            onClick={() => setShowCreateForm(true)}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setShowCreateForm(true)
+                            }}
                             className="add-list-btn"
                             aria-label="Neue Liste erstellen">
                             <Plus size={16}/>
