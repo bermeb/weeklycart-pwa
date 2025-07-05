@@ -1,5 +1,7 @@
 # WeeklyCart
 
+[![CI/CD Pipeline](https://github.com/bermeb/weeklycart-pwa/actions/workflows/deploy.yml/badge.svg)](https://github.com/bermeb/weeklycart-pwa/actions/workflows/deploy.yml)
+
 A recurring shopping list Progressive Web App (PWA) with automatic weekly reset functionality.
 
 ## 🛒 Features
@@ -19,7 +21,7 @@ Visit [weeklycart.bermeb.dev](https://weeklycart.bermeb.dev) to try the app.
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v22 or higher)
 - npm
 
 ### Installation
@@ -42,6 +44,24 @@ npm run dev
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
+- `npm test` - Run tests (placeholder)
+
+## 🔄 CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- **Automated Testing**: Runs on all branches for linting, tests, and builds
+- **Automated Deployment**: Deploys to production when changes are pushed to `main`
+- **Quality Gates**: Deployment only occurs if all tests pass
+
+The pipeline includes:
+- Code checkout
+- Node.js setup
+- Dependency installation
+- ESLint code linting
+- Test execution
+- Production build
+- Webhook-based deployment (main branch only)
 
 ## 🏗️ Built With
 
