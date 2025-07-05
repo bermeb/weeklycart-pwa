@@ -2,7 +2,7 @@ import React from 'react'
 import {Settings, Check, Sparkles, List, ChevronDown, Share2} from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
 
-const Header = ({ progress, checkedCount, totalCount, currentListName, onSettingsClick, onListSelectorClick, onShareClick }) => {
+const Header = ({ progress, checkedCount, totalCount, currentListName, onSettingsClick, onListSelectorClick, onShareClick, hasLists }) => {
     return (
         <div className="header">
             <div className="header-content">
@@ -17,7 +17,11 @@ const Header = ({ progress, checkedCount, totalCount, currentListName, onSetting
                         </button>
                     </div>
                     <div className="header-buttons">
-                        <button onClick={onShareClick} className="share-btn" aria-label="Liste teilen">
+                        <button 
+                            onClick={onShareClick} 
+                            className="share-btn" 
+                            disabled={!hasLists}
+                            aria-label="Liste teilen">
                             <Share2 size={20} />
                         </button>
                         <button onClick={onSettingsClick} className="settings-btn" aria-label="Einstellungen">
@@ -29,7 +33,9 @@ const Header = ({ progress, checkedCount, totalCount, currentListName, onSetting
                 <div className="progress-section">
                     <div className="progress-text">
                         <span>Fortschritt</span>
-                        <span className="progress-count">{checkedCount} von {totalCount}</span>
+                        <span className="progress-count">
+                            {totalCount === 0 ? 'Keine Artikel' : `${checkedCount} von ${totalCount}`}
+                        </span>
                     </div>
                     <div className="progress-bar">
                         <div

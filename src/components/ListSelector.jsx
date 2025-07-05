@@ -248,6 +248,7 @@ const ListSelector = ({
                     <button
                         onClick={() => setShowShareAllModal(true)}
                         className="share-all-btn"
+                        disabled={lists.length === 0}
                         aria-label="Alle Listen teilen">
                         <Share2 size={16}/>
                         Alle Listen teilen
@@ -281,7 +282,7 @@ const ListSelector = ({
                                         <div className="list-info">
                                             <span className="list-name">{list.name}</span>
                                             <span className="list-stats">
-                        {list.items.filter(item => item.checked).length} / {list.items.length} erledigt
+                        {list.items.length === 0 ? 'Liste leer...' : `${list.items.filter(item => item.checked).length} / ${list.items.length} erledigt`}
                       </span>
                                         </div>
                                     </>

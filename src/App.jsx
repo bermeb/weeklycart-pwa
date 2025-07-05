@@ -244,10 +244,11 @@ function App() {
                     progress={progress}
                     checkedCount={checkedCount}
                     totalCount={totalCount}
-                    currentListName={currentList?.name || 'Liste'}
+                    currentListName={currentList?.name || 'Listen'}
                     onSettingsClick={() => setShowSettings(!showSettings)}
                     onListSelectorClick={() => setShowListSelector(!showListSelector)}
                     onShareClick={() => handleShareList(currentListId)}
+                    hasLists={lists.length > 0}
                 />
             </ErrorBoundary>
 

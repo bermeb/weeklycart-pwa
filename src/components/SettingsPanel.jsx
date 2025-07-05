@@ -199,11 +199,17 @@ const SettingsPanel = ({
                 <div className="export-section">
                     <h4 className="export-section-title">Backup-Export (Datei)</h4>
                     <div className="export-button-group">
-                        <button onClick={handleExportAllJSON} className="export-btn backup-btn">
+                        <button 
+                            onClick={handleExportAllJSON} 
+                            className="export-btn backup-btn"
+                            disabled={lists.length === 0}>
                             <FileDown size={16}/>
                             Alle Listen (JSON)
                         </button>
-                        <button onClick={handleExportAllText} className="export-btn backup-btn">
+                        <button 
+                            onClick={handleExportAllText} 
+                            className="export-btn backup-btn"
+                            disabled={lists.length === 0}>
                             <FileText size={16}/>
                             Alle Listen (Text)
                         </button>

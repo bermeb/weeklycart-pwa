@@ -49,9 +49,9 @@
 }
 
 .settings-btn, .header .share-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2) !important;
   border: none;
-  color: var(--text-light);
+  color: var(--text-light) !important;
   padding: var(--space-md);
   border-radius: var(--radius-xl);
   cursor: pointer;
@@ -63,9 +63,16 @@
   min-height: var(--space-5xl);
 }
 
-.settings-btn:hover, .header .share-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+.settings-btn:hover, .header .share-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3) !important;
   transform: scale(1.05);
+}
+
+.header .share-btn:disabled {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Header List Selector Button */
