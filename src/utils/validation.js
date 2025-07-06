@@ -166,8 +166,13 @@ export const validateImportData = (data) => {
         return { isValid: false, error: 'Invalid item name in list' }
       }
 
-      if (!item.amount || typeof item.amount !== 'string') {
+      if (!item.amount || (typeof item.amount !== 'string' && typeof item.amount !== 'number')) {
         return { isValid: false, error: 'Invalid item amount in list' }
+      }
+      
+      // Convert number to string if needed
+      if (typeof item.amount === 'number') {
+        item.amount = item.amount.toString()
       }
 
       // Sanitize strings
