@@ -30,13 +30,13 @@
 }
 
 .add-input {
-  padding: var(--space-lg) var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
   border: 1px solid var(--bg-gray-dark);
-  border-radius: var(--radius-xl);
-  font-size: var(--text-lg);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
   background: var(--bg-secondary);
   transition: var(--transition-fast);
-  min-height: 48px;
+  min-height: 44px;
   box-sizing: border-box;
   width: 100%;
   color: var(--text-primary);
@@ -67,16 +67,18 @@
   background: var(--primary-blue);
   color: var(--text-light);
   border: none;
-  padding: var(--space-lg) var(--space-xl);
-  border-radius: var(--radius-xl);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 60px;
-  min-height: 48px;
+  min-width: 56px;
+  min-height: 44px;
   flex-shrink: 0;
+  font-size: var(--text-base);
+  font-weight: 500;
 }
 
 .add-btn:hover:not(:disabled) {
@@ -111,14 +113,17 @@
   background: var(--bg-tertiary);
   border: 1px solid var(--bg-gray-dark);
   color: var(--text-primary);
-  padding: 3px var(--space-xs);
-  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
   font-size: var(--text-xs);
   cursor: pointer;
   transition: var(--transition-fast);
   font-weight: 500;
-  min-height: 22px;
+  min-height: 32px;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .unit-btn:hover {
@@ -142,13 +147,14 @@
 }
 
 .edit-input {
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--bg-gray-dark);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   background: var(--bg-primary);
   transition: var(--transition-fast);
   color: var(--text-primary);
+  min-height: 36px;
 }
 
 .edit-input:focus {
@@ -188,42 +194,85 @@
   outline: none;
 }
 
+/* Desktop Optimizations */
+@media (min-width: 1025px) {
+  .add-input {
+    padding: var(--space-sm) var(--space-md);
+    min-height: 36px;
+    font-size: var(--text-sm);
+  }
+  
+  .add-btn {
+    padding: var(--space-sm) var(--space-md);
+    min-height: 36px;
+    min-width: 48px;
+    font-size: var(--text-sm);
+  }
+  
+  .unit-btn {
+    min-height: 28px;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 10px;
+  }
+  
+  .edit-input {
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 32px;
+    font-size: var(--text-xs);
+  }
+  
+  .add-item-section {
+    padding: var(--space-md) var(--space-lg);
+  }
+  
+  .quick-units {
+    gap: var(--space-xs);
+    margin-top: var(--space-xs);
+  }
+  
+  .quick-units-label {
+    font-size: var(--text-xs);
+    margin-bottom: 0;
+  }
+}
+
 /* Mobile Optimizations */
 @media (max-width: 900px) {
   .add-form {
     flex-direction: column !important;
-    gap: var(--space-lg) !important;
+    gap: var(--space-md) !important;
   }
   
   .add-input {
     width: 100% !important;
     flex: none !important;
-    min-height: 56px !important;
-    font-size: var(--text-lg) !important;
-    padding: var(--space-xl) !important;
+    min-height: 48px !important;
+    font-size: var(--text-base) !important;
+    padding: var(--space-md) var(--space-lg) !important;
   }
   
   .add-btn {
     width: 100% !important;
     flex: none !important;
-    min-height: 56px !important;
+    min-height: 48px !important;
+    font-size: var(--text-base) !important;
   }
 }
 
 @media (max-width: 1024px) {
   .add-form {
     flex-direction: column !important;
-    gap: var(--space-lg) !important;
+    gap: var(--space-md) !important;
     width: 100% !important;
     align-items: stretch !important;
   }
 
   .name-input {
     width: 100% !important;
-    min-height: 56px !important;
-    font-size: var(--text-lg) !important;
-    padding: var(--space-xl) !important;
-    border-radius: 14px !important;
+    min-height: 48px !important;
+    font-size: var(--text-base) !important;
+    padding: var(--space-md) var(--space-lg) !important;
+    border-radius: var(--radius-lg) !important;
     box-sizing: border-box !important;
     flex: none !important;
     max-width: none !important;
@@ -231,10 +280,10 @@
 
   .amount-input {
     width: 100% !important;
-    min-height: 56px !important;
-    font-size: var(--text-lg) !important;
-    padding: var(--space-xl) !important;
-    border-radius: 14px !important;
+    min-height: 48px !important;
+    font-size: var(--text-base) !important;
+    padding: var(--space-md) var(--space-lg) !important;
+    border-radius: var(--radius-lg) !important;
     box-sizing: border-box !important;
     flex: none !important;
     max-width: none !important;
@@ -242,16 +291,16 @@
 
   .add-btn {
     width: 100% !important;
-    min-height: 56px !important;
-    padding: var(--space-xl) !important;
-    font-size: 17px !important;
-    border-radius: 14px !important;
-    font-weight: 600 !important;
+    min-height: 48px !important;
+    padding: var(--space-md) var(--space-lg) !important;
+    font-size: var(--text-base) !important;
+    border-radius: var(--radius-lg) !important;
+    font-weight: 500 !important;
     flex: none !important;
   }
 
   .add-item-section {
-    padding: 24px var(--space-xl) !important;
+    padding: var(--space-lg) var(--space-xl) !important;
   }
 
   .add-item-section .add-form {
@@ -263,41 +312,41 @@
   .quick-units {
     justify-content: flex-start;
     flex-wrap: wrap;
-    gap: var(--space-md);
+    gap: var(--space-sm);
     margin-top: var(--space-sm);
   }
 
   .quick-units-label {
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     width: 100%;
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--space-xs);
     margin-right: 0;
   }
 
   .unit-btn {
-    padding: var(--space-lg) var(--space-xl);
-    font-size: 15px;
-    min-height: 48px;
-    border-radius: var(--radius-xl);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-xs);
+    min-height: 36px;
+    border-radius: var(--radius-md);
     flex: 0 0 auto;
-    min-width: 60px;
+    min-width: 48px;
   }
 
   .edit-input {
-    padding: var(--space-md) var(--space-lg);
-    font-size: var(--text-lg);
-    min-height: 44px;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-base);
+    min-height: 40px;
   }
 
   .create-list-input {
-    padding: var(--space-md) var(--space-lg);
-    font-size: var(--text-lg);
-    min-height: 48px;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-base);
+    min-height: 44px;
   }
 
   .create-btn, .save-btn, .cancel-btn {
-    padding: var(--space-md) var(--space-lg);
-    font-size: var(--text-lg);
-    min-height: 48px;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--text-base);
+    min-height: 44px;
   }
 }

@@ -17,7 +17,7 @@
 
 @media (min-width: 768px) {
   .app {
-    max-width: 420px;
+    max-width: var(--app-max-width);
     margin: 0 auto;
     border-radius: 0;
     box-shadow: var(--shadow-lg);
@@ -66,6 +66,8 @@
   background: var(--bg-primary);
   transition: var(--transition-fast);
   color: var(--text-primary);
+  min-height: var(--btn-height-md);
+  box-sizing: border-box;
 }
 
 .create-list-input:focus {
@@ -93,6 +95,8 @@
   transition: var(--transition-fast);
   flex: 1;
   justify-content: center;
+  min-height: var(--btn-height-md);
+  font-size: var(--text-base);
 }
 
 .create-btn:hover:not(:disabled) {
@@ -112,6 +116,11 @@
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
+  min-height: var(--btn-height-md);
+  font-size: var(--text-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cancel-create-btn:hover {
@@ -183,6 +192,7 @@
   align-items: center;
   gap: var(--space-xs);
   transition: var(--transition-fast);
+  min-height: var(--btn-height-sm);
 }
 
 .reset-current-btn:hover {
@@ -203,8 +213,8 @@
   background: var(--warning-orange);
   color: var(--text-light);
   border: none;
-  padding: var(--space-lg);
-  border-radius: var(--radius-xl);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -213,6 +223,7 @@
   gap: var(--space-sm);
   transition: var(--transition-fast);
   font-size: var(--text-base);
+  min-height: var(--btn-height-lg);
 }
 
 .reset-btn:hover {
@@ -235,6 +246,48 @@
 
   .list-container {
     padding-bottom: max(env(safe-area-inset-bottom), var(--space-xl));
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 769px) {
+  .create-btn {
+    min-height: 36px;
+    font-size: var(--text-sm);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .cancel-create-btn {
+    min-height: 36px;
+    font-size: var(--text-sm);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .reset-current-btn {
+    min-height: 32px;
+    font-size: var(--text-xs);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .reset-btn {
+    min-height: 40px;
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .create-list-input {
+    min-height: 36px;
+    font-size: var(--text-sm);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .create-list-section {
+    padding: var(--space-md) var(--space-lg);
+  }
+  
+  .info-footer-container {
+    margin: var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
   }
 }
 

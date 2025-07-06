@@ -29,8 +29,10 @@
 .btn-primary {
   background: var(--primary-blue);
   color: var(--text-light);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-xl);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  min-height: var(--btn-height-md);
+  font-size: var(--text-base);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -51,6 +53,8 @@
   color: var(--text-secondary);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
+  min-height: var(--btn-height-sm);
+  font-size: var(--text-sm);
 }
 
 .btn-secondary:hover {
@@ -61,8 +65,10 @@
 .btn-danger {
   background: var(--error-red);
   color: var(--text-light);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-xl);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  min-height: var(--btn-height-md);
+  font-size: var(--text-base);
 }
 
 .btn-danger:hover {
@@ -76,6 +82,8 @@
   color: var(--text-light);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
+  min-height: var(--btn-height-md);
+  font-size: var(--text-base);
 }
 
 .btn-warning:hover {
@@ -86,8 +94,10 @@
 .btn-ghost {
   background: none;
   color: var(--text-secondary);
-  padding: var(--space-xs);
+  padding: var(--space-sm);
   border-radius: var(--radius-md);
+  min-height: var(--btn-height-md);
+  min-width: 44px;
 }
 
 .btn-ghost:hover {
@@ -171,7 +181,7 @@
 .modal {
   background: var(--bg-primary);
   border-radius: var(--radius-2xl);
-  max-width: 400px;
+  max-width: var(--modal-max-width);
   width: 90%;
   max-height: 80vh;
   overflow: hidden;
@@ -193,8 +203,8 @@
 /* Toggle Switch */
 .toggle {
   position: relative;
-  width: 48px;
-  height: 28px;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
   background: var(--bg-gray-dark);
   border-radius: 14px;
   border: none;
@@ -211,8 +221,8 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 24px;
-  height: 24px;
+  width: var(--toggle-slider-size);
+  height: var(--toggle-slider-size);
   background: var(--bg-primary);
   border-radius: var(--radius-full);
   transition: transform 0.3s;
@@ -225,8 +235,8 @@
 
 /* Checkbox */
 .checkbox {
-  width: 28px;
-  height: 28px;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
   border: 2px solid var(--bg-gray-dark);
   border-radius: var(--radius-full);
   display: flex;
@@ -235,8 +245,8 @@
   transition: var(--transition-normal);
   background: var(--bg-primary);
   flex-shrink: 0;
-  min-width: 28px;
-  min-height: 28px;
+  min-width: var(--checkbox-size);
+  min-height: var(--checkbox-size);
 }
 
 .checkbox.checked {
@@ -255,7 +265,7 @@
 /* Progress Bar */
 .progress-bar {
   width: 100%;
-  height: 10px;
+  height: var(--progress-bar-height);
   background: rgba(255, 255, 255, 0.2);
   border-radius: 5px;
   overflow: hidden;
@@ -325,7 +335,7 @@
 .list-selector-panel {
   background: var(--bg-primary);
   border-radius: var(--radius-2xl);
-  max-width: 400px;
+  max-width: var(--modal-max-width);
   width: 90%;
   max-height: 80vh;
   overflow: hidden;
@@ -352,7 +362,7 @@
 }
 
 .lists-container {
-  max-height: 300px;
+  max-height: var(--list-max-height);
   overflow-y: auto;
   padding: var(--space-sm);
 }
@@ -682,13 +692,15 @@
   background: none;
   border: none;
   color: var(--text-secondary);
-  padding: var(--space-xs);
-  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: var(--btn-height-md);
+  min-width: 44px;
 }
 
 .action-btn:hover {
@@ -731,10 +743,15 @@
   background: none;
   border: none;
   color: var(--text-secondary);
-  padding: var(--space-xs);
+  padding: var(--space-sm);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
+  min-height: var(--btn-height-md);
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-btn:hover {
@@ -748,7 +765,7 @@
   background: var(--primary-blue);
   color: var(--text-light);
   border: none;
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
   border-radius: var(--radius-lg);
   font-weight: 500;
   cursor: pointer;
@@ -757,6 +774,8 @@
   justify-content: center;
   gap: var(--space-sm);
   transition: var(--transition-fast);
+  min-height: var(--btn-height-lg);
+  font-size: var(--text-base);
 }
 
 .add-list-btn:hover {
@@ -774,7 +793,7 @@
   background: var(--success-green-light);
   color: var(--text-light);
   border: none;
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
   border-radius: var(--radius-lg);
   font-weight: 500;
   cursor: pointer;
@@ -783,6 +802,8 @@
   justify-content: center;
   gap: var(--space-sm);
   transition: var(--transition-fast);
+  min-height: var(--btn-height-lg);
+  font-size: var(--text-base);
 }
 
 .share-all-btn:hover:not(:disabled) {
@@ -845,6 +866,7 @@
   transition: var(--transition-fast);
   flex: 1;
   justify-content: center;
+  min-height: var(--btn-height-md);
 }
 
 .export-btn:hover:not(:disabled) {
@@ -878,6 +900,7 @@
   transition: var(--transition-fast);
   width: 100%;
   justify-content: center;
+  min-height: var(--btn-height-lg);
 }
 
 .import-btn:hover {
@@ -990,6 +1013,7 @@
   transition: var(--transition-fast);
   width: 100%;
   justify-content: center;
+  min-height: var(--btn-height-lg);
 }
 
 .reset-btn:hover {
@@ -1020,22 +1044,22 @@
 
 /* Mobile sharing styles */
 .share-btn {
-  background: var(--success-green) !important;
-  color: white !important;
+  background: var(--success-green);
+  color: white;
 }
 
 .share-btn:hover {
-  background: var(--success-green-dark) !important;
+  background: var(--success-green-dark);
 }
 
 .action-btn.share-btn {
-  color: var(--success-green) !important;
-  background: none !important;
+  color: var(--success-green);
+  background: none;
 }
 
 .action-btn.share-btn:hover {
-  color: var(--success-green-dark) !important;
-  background: var(--success-bg) !important;
+  color: var(--success-green-dark);
+  background: var(--success-bg);
 }
 
 /* Share Modal Styles */
@@ -1056,7 +1080,7 @@
 .modal-content {
   background: var(--bg-primary);
   border-radius: var(--radius-2xl);
-  max-width: 400px;
+  max-width: var(--modal-max-width);
   width: 90%;
   max-height: 80vh;
   overflow: hidden;
@@ -1152,7 +1176,7 @@
 }
 
 .qr-code-image {
-  max-width: 200px;
+  max-width: var(--qr-code-size);
   width: 100%;
   height: auto;
   border-radius: var(--radius-md);
@@ -1182,13 +1206,13 @@
 }
 
 .backup-btn {
-  background: var(--bg-tertiary) !important;
-  color: var(--text-secondary) !important;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .backup-btn:hover {
-  background: var(--bg-gray) !important;
+  background: var(--bg-gray);
 }
 
 .qr-modal {
@@ -1209,7 +1233,7 @@
   background: var(--bg-primary);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
-  max-width: 400px;
+  max-width: var(--modal-max-width);
   width: 100%;
   text-align: center;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -1230,7 +1254,7 @@
 }
 
 .qr-code-image {
-  max-width: 200px;
+  max-width: var(--qr-code-size);
   height: auto;
   border-radius: var(--radius-md);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -1297,7 +1321,7 @@
 .confirmation-modal {
   background: var(--bg-primary);
   border-radius: var(--radius-2xl);
-  max-width: 400px;
+  max-width: var(--modal-max-width);
   width: 90%;
   box-shadow: var(--shadow-lg);
   animation: slideUp 0.3s ease-out;
@@ -1358,6 +1382,73 @@
   background: var(--bg-gray);
   color: var(--text-primary);
   transform: translateY(-1px);
+}
+
+/* Desktop optimizations */
+@media (min-width: 769px) {
+  .btn-primary {
+    padding: var(--space-xs) var(--space-md);
+    min-height: 36px;
+    font-size: var(--text-sm);
+  }
+  
+  .btn-secondary {
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 32px;
+  }
+  
+  .btn-danger {
+    padding: var(--space-xs) var(--space-md);
+    min-height: 36px;
+    font-size: var(--text-sm);
+  }
+  
+  .btn-warning {
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 36px;
+    font-size: var(--text-sm);
+  }
+  
+  .action-btn {
+    min-height: 32px;
+    min-width: 32px;
+    padding: var(--space-xs);
+  }
+  
+  .close-btn {
+    min-height: 32px;
+    min-width: 32px;
+    padding: var(--space-xs);
+  }
+  
+  .add-list-btn {
+    min-height: var(--btn-height-sm);
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .share-all-btn {
+    min-height: var(--btn-height-sm);
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .export-btn {
+    min-height: 36px;
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .import-btn {
+    min-height: var(--btn-height-sm);
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .reset-btn {
+    min-height: var(--btn-height-sm);
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
 }
 
 /* Mobile responsive styles */
