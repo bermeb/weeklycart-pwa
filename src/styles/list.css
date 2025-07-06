@@ -145,8 +145,9 @@
 }
 
 .edit-btn:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+  color: var(--warning-orange-dark);
+  background: var(--warning-bg);
+  transform: translateY(-1px);
 }
 
 .save-btn {
@@ -173,12 +174,22 @@
 }
 
 .delete-btn {
-  color: #ef4444;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .delete-btn:hover {
-  background: #fef2f2;
-  color: #dc2626;
+  color: var(--error-red);
+  background: var(--error-bg);
+  transform: translateY(-1px);
 }
 
 /* Empty State */

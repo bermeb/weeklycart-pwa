@@ -5,8 +5,11 @@ import {
     shareViaWebShare,
     copyShareUrl,
     generateQRCode,
-    isWebShareSupported
+    isWebShareSupported,
+    createCompressedShareData,
+    generateShareUrl
 } from '../utils/sharing'
+import { VALIDATION_LIMITS } from '../utils/validation'
 
 const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'current' }) => {
     const [showQRCode, setShowQRCode] = useState(false)
@@ -101,17 +104,55 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
         return null
     }
 
+    const handleShareError = (error, shareData) => {
+        console.log('Share error:', error)
+        if (error.message === 'Share too large') {
+            setShareStatus('Listen zu groß zum Teilen - bitte einzelne Liste verwenden')
+        } else if (error.message === 'Permission denied') {
+            setShareStatus('Berechtigung verweigert - Link wird kopiert...')
+            // Fallback to copy URL
+            copyShareUrl(shareData)
+                .then(() => setShareStatus('Link in die Zwischenablage kopiert'))
+                .catch(() => setShareStatus('Fehler beim Kopieren des Links'))
+        } else {
+            setShareStatus(`Fehler beim Teilen: ${error.message}`)
+        }
+        setTimeout(() => setShareStatus(''), 5000)
+    }
+
+    const handleQRError = (error) => {
+        console.log('QR Code error:', error)
+        if (error.message === 'Share too large') {
+            setShareStatus('Listen zu groß für QR-Code - bitte einzelne Liste verwenden')
+        } else if (error.message === 'QR code service unavailable') {
+            setShareStatus('QR-Code Service nicht verfügbar - bitte Link-Option verwenden')
+        } else {
+            setShareStatus(`QR-Code Fehler: ${error.message}`)
+        }
+        setTimeout(() => setShareStatus(''), 5000)
+    }
+
     const handleShare = async () => {
         const shareData = getShareData()
         if (!shareData) return
 
         try {
             const isSingleList = shareType === 'current'
+            
+            // Check if data is too large and try compressed version
+            let dataToShare = shareData
+            const shareUrl = generateShareUrl(shareData)
+            
+            if (shareUrl.length > VALIDATION_LIMITS.QR_URL_LIMIT) {
+                setShareStatus('Daten zu groß - verwende komprimierte Version...')
+                dataToShare = createCompressedShareData(shareData)
+            }
+            
             if (isWebShareSupported()) {
-                await shareViaWebShare(shareData, isSingleList)
+                await shareViaWebShare(dataToShare, isSingleList)
                 setShareStatus('Erfolgreich geteilt')
             } else {
-                await copyShareUrl(shareData)
+                await copyShareUrl(dataToShare)
                 setShareStatus('Link in die Zwischenablage kopiert')
             }
             setTimeout(() => {
@@ -119,8 +160,20 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
                 onClose()
             }, 2000)
         } catch (error) {
-            setShareStatus(`Fehler beim Teilen: ${error.message}`)
-            setTimeout(() => setShareStatus(''), 3000)
+            handleShareError(error, shareData)
+        }
+    }
+
+    const generateQRCodeWithRetry = async (shareData) => {
+        try {
+            return await generateQRCode(shareData)
+        } catch (error) {
+            if (error.message === 'Share too large') {
+                setShareStatus('Erstelle komprimierten QR-Code...')
+                const compressedData = createCompressedShareData(shareData)
+                return await generateQRCode(compressedData)
+            }
+            throw error
         }
     }
 
@@ -131,12 +184,12 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
         setIsGeneratingQR(true)
         
         try {
-            const qrUrl = await generateQRCode(shareData)
+            const qrUrl = await generateQRCodeWithRetry(shareData)
             setQrCodeUrl(qrUrl)
             setShowQRCode(true)
+            setShareStatus('')
         } catch (error) {
-            setShareStatus(`QR-Code Fehler: ${error.message}`)
-            setTimeout(() => setShareStatus(''), 5000)
+            handleQRError(error)
         } finally {
             setIsGeneratingQR(false)
         }
@@ -206,16 +259,22 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
                                 alt={`QR Code für ${getModalTitle()}`} 
                                 className="qr-code-image"
                                 role="img"
-                                aria-describedby="qr-instructions"/>
+                                aria-describedby="qr-instructions"
+                                onError={() => {
+                                    setShareStatus('QR-Code konnte nicht geladen werden')
+                                    setTimeout(() => setShareStatus(''), 3000)
+                                }}/>
                         </div>
                         <p id="qr-instructions">Scannen Sie diesen QR-Code, um die Liste zu importieren</p>
-                        <button 
-                            onClick={() => setShowQRCode(false)} 
-                            className="share-option-btn secondary"
-                            aria-label="Zurück zu den Teilen-Optionen">
-                            <Copy size={16} />
-                            Zurück zu den Optionen
-                        </button>
+                        <div className="qr-actions">
+                            <button 
+                                onClick={() => setShowQRCode(false)} 
+                                className="share-option-btn secondary"
+                                aria-label="Zurück zu den Teilen-Optionen">
+                                <Copy size={16} />
+                                Zurück zu den Optionen
+                            </button>
+                        </div>
                     </div>
                 )}
 

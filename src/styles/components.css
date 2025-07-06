@@ -708,8 +708,10 @@
 }
 
 .edit-btn:hover {
-  color: var(--primary-blue);
-  background: var(--info-bg);
+  color: var(--warning-orange-dark);
+  background: var(--warning-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
 .delete-btn:hover {

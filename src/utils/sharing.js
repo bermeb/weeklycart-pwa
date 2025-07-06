@@ -28,7 +28,7 @@ export const generateShareUrl = (listData) => {
 
 // Web Share API utilities
 export const isWebShareSupported = () => {
-  return 'share' in navigator
+  return 'share' in navigator && typeof navigator.share === 'function'
 }
 
 export const shareViaWebShare = async (listData, isSingleList = false) => {
@@ -39,16 +39,31 @@ export const shareViaWebShare = async (listData, isSingleList = false) => {
   const shareUrl = generateShareUrl(listData)
   const listName = isSingleList ? listData.list.name : 'Einkaufslisten'
   
+  // Check if the URL is too long for sharing
+  if (shareUrl.length > VALIDATION_LIMITS.MAX_URL_LENGTH) {
+    throw new Error('Share too large')
+  }
+  
+  const shareData = {
+    title: `${listName} - WeeklyCart`,
+    text: `Hier ist meine Einkaufsliste: ${listName}`,
+    url: shareUrl
+  }
+  
+  // Check if the data can be shared before attempting
+  if (navigator.canShare && !navigator.canShare(shareData)) {
+    throw new Error('Share data not supported')
+  }
+  
   try {
-    await navigator.share({
-      title: `${listName} - WeeklyCart`,
-      text: `Hier ist meine Einkaufsliste: ${listName}`,
-      url: shareUrl
-    })
+    await navigator.share(shareData)
     return true
   } catch (error) {
     if (error.name === 'AbortError') {
       return false // User cancelled
+    }
+    if (error.name === 'NotAllowedError') {
+      throw new Error('Permission denied')
     }
     throw error
   }
@@ -73,7 +88,7 @@ export const copyShareUrl = async (listData) => {
   }
 }
 
-// QR Code generation (using QR Server API)
+// QR Code generation with data compression
 export const generateQRCode = async (listData) => {
   const isOnline = await checkNetworkConnectivity()
   if (!isOnline) {
@@ -81,7 +96,54 @@ export const generateQRCode = async (listData) => {
   }
   
   const shareUrl = generateShareUrl(listData)
-  return `https://api.qrserver.com/v1/create-qr-code/?size=${VALIDATION_LIMITS.QR_CODE_SIZE}&data=${encodeURIComponent(shareUrl)}`
+  
+  // Check if URL is too long for QR codes
+  if (shareUrl.length > VALIDATION_LIMITS.QR_URL_LIMIT) {
+    throw new Error('Share too large')
+  }
+  
+  const qrServiceUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${VALIDATION_LIMITS.QR_CODE_SIZE}&data=${encodeURIComponent(shareUrl)}`
+  
+  // Test if QR service is reachable
+  try {
+    await fetch(qrServiceUrl, { method: 'HEAD', mode: 'no-cors' })
+    return qrServiceUrl
+  } catch {
+    throw new Error('QR code service unavailable')
+  }
+}
+
+// Create compressed share data for large lists
+export const createCompressedShareData = (listData) => {
+  const { COMPRESSION_LIMITS } = VALIDATION_LIMITS
+  
+  // For very large datasets, only include essential data
+  if (listData.lists) {
+    return {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      lists: listData.lists.map(list => ({
+        name: list.name.substring(0, COMPRESSION_LIMITS.MAX_LIST_NAME_LENGTH),
+        items: list.items.slice(0, COMPRESSION_LIMITS.MAX_ITEMS_PER_LIST_COMPRESSED).map(item => ({
+          name: item.name.substring(0, COMPRESSION_LIMITS.MAX_ITEM_NAME_LENGTH),
+          amount: item.amount.substring(0, COMPRESSION_LIMITS.MAX_ITEM_AMOUNT_LENGTH)
+        }))
+      }))
+    }
+  } else if (listData.list) {
+    return {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      list: {
+        name: listData.list.name.substring(0, COMPRESSION_LIMITS.MAX_LIST_NAME_LENGTH),
+        items: listData.list.items.slice(0, COMPRESSION_LIMITS.MAX_ITEMS_SINGLE_LIST_COMPRESSED).map(item => ({
+          name: item.name.substring(0, COMPRESSION_LIMITS.MAX_ITEM_NAME_LENGTH),
+          amount: item.amount.substring(0, COMPRESSION_LIMITS.MAX_ITEM_AMOUNT_LENGTH)
+        }))
+      }
+    }
+  }
+  return listData
 }
 
 // Text-based sharing for messaging apps
