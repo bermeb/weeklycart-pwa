@@ -92,6 +92,18 @@
   --z-dropdown: 100;
   --z-sticky: 10;
   --z-base: 1;
+  
+  /* Layout Constants */
+  --app-max-width: 420px;
+  --modal-max-width: 400px;
+  --list-max-height: 300px;
+  --qr-code-size: 200px;
+  --toggle-width: 48px;
+  --toggle-height: 28px;
+  --toggle-slider-size: 24px;
+  --checkbox-size: 28px;
+  --progress-bar-height: 10px;
+  --header-decoration-size: 120px;
 }
 
 /* Desktop optimizations */

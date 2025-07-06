@@ -1,6 +1,10 @@
 import React, { useState, useRef } from 'react'
-import {Calendar, RefreshCw, Settings, Upload, FileText, FileDown} from 'lucide-react'
+import {Settings, FileDown} from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
+import AutoResetSettings from './AutoResetSettings'
+import ExportSection from './ExportSection'
+import ImportSection from './ImportSection'
+import SettingsHeader from './SettingsHeader'
 import { 
     exportListsToJSON, 
     exportListsToText, 
@@ -80,24 +84,6 @@ const SettingsPanel = ({
         event.target.value = ''
     }
 
-    const getImportType = () => {
-        if (!pendingImportData) return 'unknown'
-        return pendingImportData.lists ? 'multiple' : 'single'
-    }
-
-    const hasNameConflict = () => {
-        if (!pendingImportData) return false
-        
-        const existingNames = new Set(lists.map(list => list.name))
-        
-        if (pendingImportData.lists) {
-            return pendingImportData.lists.some(list => existingNames.has(list.name))
-        } else if (pendingImportData.list) {
-            return existingNames.has(pendingImportData.list.name)
-        }
-        
-        return false
-    }
 
     const handleConfirmImport = (strategy) => {
         if (strategy === 'replace') {
@@ -144,164 +130,45 @@ const SettingsPanel = ({
     }
     return (
         <div className="settings-panel">
-            <div className="settings-header">
-                <h3 className="settings-title">
-                    <Settings size={18}/>
-                    Einstellungen
-                </h3>
-            </div>
-
-            <div className="settings-row">
-                <label className="settings-label">
-                    <Calendar size={16}/>
-                    Automatisches Zurücksetzten
-                </label>
-                <button
-                    onClick={() => onAutoResetChange(!autoReset)}
-                    className={`toggle ${autoReset ? 'active' : ''}`}
-                    aria-label={`Automatisches Zurücksetzen ${autoReset ? 'deaktivieren' : 'aktivieren'}`}>
-                    <div className="toggle-slider"/>
-                </button>
-            </div>
-
-            <div className="settings-row">
-                <label className="settings-label">
-                    <Calendar size={16}/>
-                    Reset-Tag wählen:
-                </label>
-                <select
-                    value={resetDay}
-                    onChange={(e) => onResetDayChange(parseInt(e.target.value))}
-                    className="day-select"
-                    disabled={!autoReset}
-                    aria-label="Tag für automatisches Zurücksetzen wählen">
-                    {weekDays.map((day, index) => (
-                        <option key={index} value={index}>{day}</option>
-                    ))}
-                </select>
-            </div>
-
-            <button onClick={onManualReset} className="reset-btn" aria-label="Alle Listen jetzt zurücksetzten">
-                <RefreshCw size={16}/>
-                Alle Listen zurücksetzten ({listsCount})
-            </button>
+            <SettingsHeader icon={Settings} title="Einstellungen" />
+            
+            <AutoResetSettings
+                autoReset={autoReset}
+                resetDay={resetDay}
+                weekDays={weekDays}
+                onAutoResetChange={onAutoResetChange}
+                onResetDayChange={onResetDayChange}
+                onManualReset={onManualReset}
+                listsCount={listsCount}
+            />
 
             <div className="settings-divider"></div>
 
-            <div className="settings-header">
-                <h3 className="settings-title">
-                    <FileDown size={18}/>
-                    Backup & Import
-                </h3>
-            </div>
-
-            <div className="export-buttons">
-                <div className="export-section">
-                    <h4 className="export-section-title">Backup-Export (Datei)</h4>
-                    <div className="export-button-group">
-                        <button 
-                            onClick={handleExportAllJSON} 
-                            className="export-btn backup-btn"
-                            disabled={lists.length === 0}>
-                            <FileDown size={16}/>
-                            Alle Listen (JSON)
-                        </button>
-                        <button 
-                            onClick={handleExportAllText} 
-                            className="export-btn backup-btn"
-                            disabled={lists.length === 0}>
-                            <FileText size={16}/>
-                            Alle Listen (Text)
-                        </button>
-                        {currentList && (
-                            <>
-                                <button onClick={handleExportCurrentJSON} className="export-btn backup-btn">
-                                    <FileDown size={16}/>
-                                    Aktuelle Liste (JSON)
-                                </button>
-                                <button onClick={handleExportCurrentText} className="export-btn backup-btn">
-                                    <FileText size={16}/>
-                                    Aktuelle Liste (Text)
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            <div className="import-section">
-                <button onClick={handleImportClick} className="import-btn">
-                    <Upload size={16}/>
-                    Listen importieren
-                </button>
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileImport}
-                    accept=".json"
-                    style={{ display: 'none' }}
-                />
-            </div>
-
-            {importStatus && (
-                <div 
-                    className={`import-status ${importStatus.includes('Fehler') ? 'error' : 'success'}`}
-                    role={importStatus.includes('Fehler') ? 'alert' : 'status'}
-                    aria-live="polite">
-                    {importStatus}
-                </div>
-            )}
-
-            {showImportOptions && (
-                <div className="import-options">
-                    <h4>Import-Optionen</h4>
-                    <p>Wie sollen die importierten Listen behandelt werden?</p>
-                    <div className="import-buttons">
-                        <button 
-                            onClick={() => handleConfirmImport('append')} 
-                            className="import-option-btn append">
-                            Hinzufügen
-                        </button>
-                        {(getImportType() === 'multiple' || hasNameConflict()) && (
-                            <button 
-                                onClick={() => handleConfirmImport('replace')} 
-                                className="import-option-btn replace">
-                                {getImportType() === 'multiple' ? 'Alle Listen ersetzen' : 'Ersetzen'}
-                            </button>
-                        )}
-                        <button 
-                            onClick={handleCancelImport} 
-                            className="import-option-btn cancel">
-                            Abbrechen
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {showReplaceConfirm && (
-                <div className="import-options">
-                    <h4>Bestätigung erforderlich</h4>
-                    <p>
-                        {getImportType() === 'multiple' 
-                            ? 'Möchten Sie wirklich alle bestehenden Listen ersetzen? Diese Aktion kann nicht rückgängig gemacht werden.'
-                            : 'Möchten Sie wirklich die bestehende Liste ersetzen? Diese Aktion kann nicht rückgängig gemacht werden.'
-                        }
-                    </p>
-                    <div className="import-buttons">
-                        <button 
-                            onClick={handleConfirmReplace} 
-                            className="import-option-btn replace">
-                            Ja, ersetzen
-                        </button>
-                        <button 
-                            onClick={handleCancelReplace} 
-                            className="import-option-btn cancel">
-                            Abbrechen
-                        </button>
-                    </div>
-                </div>
-            )}
-
+            <SettingsHeader icon={FileDown} title="Backup & Import" />
+            
+            <ExportSection
+                lists={lists}
+                currentList={currentList}
+                onExportAllJSON={handleExportAllJSON}
+                onExportAllText={handleExportAllText}
+                onExportCurrentJSON={handleExportCurrentJSON}
+                onExportCurrentText={handleExportCurrentText}
+            />
+            
+            <ImportSection
+                fileInputRef={fileInputRef}
+                onImportClick={handleImportClick}
+                onFileImport={handleFileImport}
+                importStatus={importStatus}
+                showImportOptions={showImportOptions}
+                showReplaceConfirm={showReplaceConfirm}
+                pendingImportData={pendingImportData}
+                lists={lists}
+                onConfirmImport={handleConfirmImport}
+                onConfirmReplace={handleConfirmReplace}
+                onCancelReplace={handleCancelReplace}
+                onCancelImport={handleCancelImport}
+            />
         </div>
     )
 }
