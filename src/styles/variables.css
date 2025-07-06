@@ -40,7 +40,7 @@
   --info-bg: #1e40af;
   --info-border: #1e40af;
   
-  /* Spacing */
+  /* Spacing - Mobile First */
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 12px;
@@ -51,6 +51,14 @@
   --space-4xl: 40px;
   --space-5xl: 48px;
   --space-6xl: 60px;
+  
+  /* Button Sizes - Mobile First */
+  --btn-height-sm: 36px;
+  --btn-height-md: 44px;
+  --btn-height-lg: 48px;
+  --btn-padding-sm: var(--space-xs) var(--space-sm);
+  --btn-padding-md: var(--space-sm) var(--space-md);
+  --btn-padding-lg: var(--space-md) var(--space-lg);
   
   /* Border Radius */
   --radius-sm: 4px;
@@ -84,6 +92,19 @@
   --z-dropdown: 100;
   --z-sticky: 10;
   --z-base: 1;
+}
+
+/* Desktop optimizations */
+@media (min-width: 769px) {
+  :root {
+    /* Desktop Button Sizes */
+    --btn-height-sm: 28px;
+    --btn-height-md: 36px;
+    --btn-height-lg: 40px;
+    --btn-padding-sm: 2px var(--space-xs);
+    --btn-padding-md: var(--space-xs) var(--space-sm);
+    --btn-padding-lg: var(--space-sm) var(--space-md);
+  }
 }
 
 /* Dark mode variables */

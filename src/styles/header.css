@@ -52,15 +52,15 @@
   background: rgba(255, 255, 255, 0.2) !important;
   border: none;
   color: var(--text-light) !important;
-  padding: var(--space-md);
-  border-radius: var(--radius-xl);
+  padding: var(--space-sm);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: var(--space-5xl);
-  min-height: var(--space-5xl);
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .settings-btn:hover, .header .share-btn:hover:not(:disabled) {
@@ -80,16 +80,17 @@
   background: rgba(255, 255, 255, 0.15);
   border: none;
   color: var(--text-light);
-  padding: var(--space-sm) var(--space-md);
-  border-radius: var(--radius-lg);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  font-size: var(--text-sm);
+  gap: var(--space-xs);
+  font-size: var(--text-xs);
   margin-top: var(--space-xs);
-  max-width: 200px;
+  max-width: 180px;
+  min-height: 32px;
 }
 
 .list-selector-btn:hover {
@@ -101,7 +102,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 120px;
 }
 
 /* Progress Section */
@@ -140,5 +141,34 @@
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 769px) {
+  .settings-btn, .header .share-btn {
+    min-width: 36px;
+    min-height: 36px;
+    padding: var(--space-xs);
+  }
+  
+  .list-selector-btn {
+    padding: 2px var(--space-xs);
+    font-size: 11px;
+    min-height: 28px;
+    max-width: 160px;
+    gap: 2px;
+  }
+  
+  .current-list-name {
+    max-width: 100px;
+  }
+  
+  .title {
+    font-size: var(--text-2xl);
+  }
+  
+  .subtitle {
+    font-size: var(--text-sm);
   }
 }

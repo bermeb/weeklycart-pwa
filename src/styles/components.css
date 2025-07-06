@@ -29,8 +29,10 @@
 .btn-primary {
   background: var(--primary-blue);
   color: var(--text-light);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-xl);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  min-height: 44px;
+  font-size: var(--text-base);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -51,6 +53,8 @@
   color: var(--text-secondary);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
+  min-height: 40px;
+  font-size: var(--text-sm);
 }
 
 .btn-secondary:hover {
@@ -61,8 +65,10 @@
 .btn-danger {
   background: var(--error-red);
   color: var(--text-light);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-xl);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  min-height: 44px;
+  font-size: var(--text-base);
 }
 
 .btn-danger:hover {
@@ -76,6 +82,8 @@
   color: var(--text-light);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
+  min-height: 44px;
+  font-size: var(--text-base);
 }
 
 .btn-warning:hover {
@@ -86,8 +94,10 @@
 .btn-ghost {
   background: none;
   color: var(--text-secondary);
-  padding: var(--space-xs);
+  padding: var(--space-sm);
   border-radius: var(--radius-md);
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .btn-ghost:hover {
@@ -682,13 +692,15 @@
   background: none;
   border: none;
   color: var(--text-secondary);
-  padding: var(--space-xs);
-  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 .action-btn:hover {
@@ -731,10 +743,15 @@
   background: none;
   border: none;
   color: var(--text-secondary);
-  padding: var(--space-xs);
+  padding: var(--space-sm);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .close-btn:hover {
@@ -748,7 +765,7 @@
   background: var(--primary-blue);
   color: var(--text-light);
   border: none;
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
   border-radius: var(--radius-lg);
   font-weight: 500;
   cursor: pointer;
@@ -757,6 +774,8 @@
   justify-content: center;
   gap: var(--space-sm);
   transition: var(--transition-fast);
+  min-height: 48px;
+  font-size: var(--text-base);
 }
 
 .add-list-btn:hover {
@@ -774,7 +793,7 @@
   background: var(--success-green-light);
   color: var(--text-light);
   border: none;
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
   border-radius: var(--radius-lg);
   font-weight: 500;
   cursor: pointer;
@@ -783,6 +802,8 @@
   justify-content: center;
   gap: var(--space-sm);
   transition: var(--transition-fast);
+  min-height: 48px;
+  font-size: var(--text-base);
 }
 
 .share-all-btn:hover:not(:disabled) {
@@ -845,6 +866,7 @@
   transition: var(--transition-fast);
   flex: 1;
   justify-content: center;
+  min-height: 44px;
 }
 
 .export-btn:hover:not(:disabled) {
@@ -878,6 +900,7 @@
   transition: var(--transition-fast);
   width: 100%;
   justify-content: center;
+  min-height: 48px;
 }
 
 .import-btn:hover {
@@ -990,6 +1013,7 @@
   transition: var(--transition-fast);
   width: 100%;
   justify-content: center;
+  min-height: 48px;
 }
 
 .reset-btn:hover {
@@ -1358,6 +1382,73 @@
   background: var(--bg-gray);
   color: var(--text-primary);
   transform: translateY(-1px);
+}
+
+/* Desktop optimizations */
+@media (min-width: 769px) {
+  .btn-primary {
+    padding: var(--space-xs) var(--space-md);
+    min-height: 36px;
+    font-size: var(--text-sm);
+  }
+  
+  .btn-secondary {
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 32px;
+  }
+  
+  .btn-danger {
+    padding: var(--space-xs) var(--space-md);
+    min-height: 36px;
+    font-size: var(--text-sm);
+  }
+  
+  .btn-warning {
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 36px;
+    font-size: var(--text-sm);
+  }
+  
+  .action-btn {
+    min-height: 32px;
+    min-width: 32px;
+    padding: var(--space-xs);
+  }
+  
+  .close-btn {
+    min-height: 32px;
+    min-width: 32px;
+    padding: var(--space-xs);
+  }
+  
+  .add-list-btn {
+    min-height: 40px;
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .share-all-btn {
+    min-height: 40px;
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .export-btn {
+    min-height: 36px;
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .import-btn {
+    min-height: 40px;
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .reset-btn {
+    min-height: 40px;
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
 }
 
 /* Mobile responsive styles */
