@@ -9,7 +9,8 @@ export const VALIDATION_LIMITS = {
   MAX_LISTS_COUNT: 100,
   MAX_ITEMS_PER_LIST: 500,
   MAX_STRING_LENGTH: 1000,
-  QR_CODE_SIZE: '200x200'
+  QR_CODE_SIZE: '200x200',
+  QR_URL_LIMIT: 2000 // Practical limit for QR codes
 }
 
 /**

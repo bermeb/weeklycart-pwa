@@ -5,7 +5,9 @@ import {
     shareViaWebShare,
     copyShareUrl,
     generateQRCode,
-    isWebShareSupported
+    isWebShareSupported,
+    createCompressedShareData,
+    generateShareUrl
 } from '../utils/sharing'
 
 const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'current' }) => {
@@ -107,11 +109,21 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
 
         try {
             const isSingleList = shareType === 'current'
+            
+            // Check if data is too large and try compressed version
+            let dataToShare = shareData
+            const shareUrl = generateShareUrl(shareData)
+            
+            if (shareUrl.length > 2000) { // Using conservative limit
+                setShareStatus('Daten zu groß - verwende komprimierte Version...')
+                dataToShare = createCompressedShareData(shareData)
+            }
+            
             if (isWebShareSupported()) {
-                await shareViaWebShare(shareData, isSingleList)
+                await shareViaWebShare(dataToShare, isSingleList)
                 setShareStatus('Erfolgreich geteilt')
             } else {
-                await copyShareUrl(shareData)
+                await copyShareUrl(dataToShare)
                 setShareStatus('Link in die Zwischenablage kopiert')
             }
             setTimeout(() => {
@@ -119,8 +131,23 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
                 onClose()
             }, 2000)
         } catch (error) {
-            setShareStatus(`Fehler beim Teilen: ${error.message}`)
-            setTimeout(() => setShareStatus(''), 3000)
+            console.log('Share error:', error)
+            // Handle specific error cases
+            if (error.message === 'Share too large') {
+                setShareStatus('Listen zu groß zum Teilen - bitte einzelne Liste verwenden')
+            } else if (error.message === 'Permission denied') {
+                setShareStatus('Berechtigung verweigert - Link wird kopiert...')
+                // Fallback to copy URL
+                try {
+                    await copyShareUrl(shareData)
+                    setShareStatus('Link in die Zwischenablage kopiert')
+                } catch {
+                    setShareStatus('Fehler beim Kopieren des Links')
+                }
+            } else {
+                setShareStatus(`Fehler beim Teilen: ${error.message}`)
+            }
+            setTimeout(() => setShareStatus(''), 5000)
         }
     }
 
@@ -131,11 +158,41 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
         setIsGeneratingQR(true)
         
         try {
-            const qrUrl = await generateQRCode(shareData)
+            // Try with original data first
+            let dataToShare = shareData
+            let qrUrl = null
+            let firstError = null
+            
+            try {
+                qrUrl = await generateQRCode(dataToShare)
+            } catch (error) {
+                firstError = error
+            }
+            
+            // If first attempt failed with 'Share too large', try compressed data
+            if (firstError && firstError.message === 'Share too large') {
+                setShareStatus('Erstelle komprimierten QR-Code...')
+                dataToShare = createCompressedShareData(shareData)
+                qrUrl = await generateQRCode(dataToShare)
+            } else if (firstError) {
+                // Handle other errors
+                console.log('QR Code error:', firstError)
+                setShareStatus('Fehler beim Erstellen des QR-Codes')
+                return
+            }
+            
             setQrCodeUrl(qrUrl)
             setShowQRCode(true)
+            setShareStatus('')
         } catch (error) {
-            setShareStatus(`QR-Code Fehler: ${error.message}`)
+            console.log('QR Code error:', error)
+            if (error.message === 'Share too large') {
+                setShareStatus('Listen zu groß für QR-Code - bitte einzelne Liste verwenden')
+            } else if (error.message === 'QR code service unavailable') {
+                setShareStatus('QR-Code Service nicht verfügbar - bitte Link-Option verwenden')
+            } else {
+                setShareStatus(`QR-Code Fehler: ${error.message}`)
+            }
             setTimeout(() => setShareStatus(''), 5000)
         } finally {
             setIsGeneratingQR(false)
@@ -206,16 +263,22 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
                                 alt={`QR Code für ${getModalTitle()}`} 
                                 className="qr-code-image"
                                 role="img"
-                                aria-describedby="qr-instructions"/>
+                                aria-describedby="qr-instructions"
+                                onError={() => {
+                                    setShareStatus('QR-Code konnte nicht geladen werden')
+                                    setTimeout(() => setShareStatus(''), 3000)
+                                }}/>
                         </div>
                         <p id="qr-instructions">Scannen Sie diesen QR-Code, um die Liste zu importieren</p>
-                        <button 
-                            onClick={() => setShowQRCode(false)} 
-                            className="share-option-btn secondary"
-                            aria-label="Zurück zu den Teilen-Optionen">
-                            <Copy size={16} />
-                            Zurück zu den Optionen
-                        </button>
+                        <div className="qr-actions">
+                            <button 
+                                onClick={() => setShowQRCode(false)} 
+                                className="share-option-btn secondary"
+                                aria-label="Zurück zu den Teilen-Optionen">
+                                <Copy size={16} />
+                                Zurück zu den Optionen
+                            </button>
+                        </div>
                     </div>
                 )}
 
