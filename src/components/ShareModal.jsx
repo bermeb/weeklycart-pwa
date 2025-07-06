@@ -9,6 +9,7 @@ import {
     createCompressedShareData,
     generateShareUrl
 } from '../utils/sharing'
+import { VALIDATION_LIMITS } from '../utils/validation'
 
 const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'current' }) => {
     const [showQRCode, setShowQRCode] = useState(false)
@@ -103,6 +104,34 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
         return null
     }
 
+    const handleShareError = (error, shareData) => {
+        console.log('Share error:', error)
+        if (error.message === 'Share too large') {
+            setShareStatus('Listen zu groß zum Teilen - bitte einzelne Liste verwenden')
+        } else if (error.message === 'Permission denied') {
+            setShareStatus('Berechtigung verweigert - Link wird kopiert...')
+            // Fallback to copy URL
+            copyShareUrl(shareData)
+                .then(() => setShareStatus('Link in die Zwischenablage kopiert'))
+                .catch(() => setShareStatus('Fehler beim Kopieren des Links'))
+        } else {
+            setShareStatus(`Fehler beim Teilen: ${error.message}`)
+        }
+        setTimeout(() => setShareStatus(''), 5000)
+    }
+
+    const handleQRError = (error) => {
+        console.log('QR Code error:', error)
+        if (error.message === 'Share too large') {
+            setShareStatus('Listen zu groß für QR-Code - bitte einzelne Liste verwenden')
+        } else if (error.message === 'QR code service unavailable') {
+            setShareStatus('QR-Code Service nicht verfügbar - bitte Link-Option verwenden')
+        } else {
+            setShareStatus(`QR-Code Fehler: ${error.message}`)
+        }
+        setTimeout(() => setShareStatus(''), 5000)
+    }
+
     const handleShare = async () => {
         const shareData = getShareData()
         if (!shareData) return
@@ -114,7 +143,7 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
             let dataToShare = shareData
             const shareUrl = generateShareUrl(shareData)
             
-            if (shareUrl.length > 2000) { // Using conservative limit
+            if (shareUrl.length > VALIDATION_LIMITS.QR_URL_LIMIT) {
                 setShareStatus('Daten zu groß - verwende komprimierte Version...')
                 dataToShare = createCompressedShareData(shareData)
             }
@@ -131,23 +160,20 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
                 onClose()
             }, 2000)
         } catch (error) {
-            console.log('Share error:', error)
-            // Handle specific error cases
+            handleShareError(error, shareData)
+        }
+    }
+
+    const generateQRCodeWithRetry = async (shareData) => {
+        try {
+            return await generateQRCode(shareData)
+        } catch (error) {
             if (error.message === 'Share too large') {
-                setShareStatus('Listen zu groß zum Teilen - bitte einzelne Liste verwenden')
-            } else if (error.message === 'Permission denied') {
-                setShareStatus('Berechtigung verweigert - Link wird kopiert...')
-                // Fallback to copy URL
-                try {
-                    await copyShareUrl(shareData)
-                    setShareStatus('Link in die Zwischenablage kopiert')
-                } catch {
-                    setShareStatus('Fehler beim Kopieren des Links')
-                }
-            } else {
-                setShareStatus(`Fehler beim Teilen: ${error.message}`)
+                setShareStatus('Erstelle komprimierten QR-Code...')
+                const compressedData = createCompressedShareData(shareData)
+                return await generateQRCode(compressedData)
             }
-            setTimeout(() => setShareStatus(''), 5000)
+            throw error
         }
     }
 
@@ -158,42 +184,12 @@ const ShareModal = ({ isOpen, onClose, lists, currentListId, shareType = 'curren
         setIsGeneratingQR(true)
         
         try {
-            // Try with original data first
-            let dataToShare = shareData
-            let qrUrl = null
-            let firstError = null
-            
-            try {
-                qrUrl = await generateQRCode(dataToShare)
-            } catch (error) {
-                firstError = error
-            }
-            
-            // If first attempt failed with 'Share too large', try compressed data
-            if (firstError && firstError.message === 'Share too large') {
-                setShareStatus('Erstelle komprimierten QR-Code...')
-                dataToShare = createCompressedShareData(shareData)
-                qrUrl = await generateQRCode(dataToShare)
-            } else if (firstError) {
-                // Handle other errors
-                console.log('QR Code error:', firstError)
-                setShareStatus('Fehler beim Erstellen des QR-Codes')
-                return
-            }
-            
+            const qrUrl = await generateQRCodeWithRetry(shareData)
             setQrCodeUrl(qrUrl)
             setShowQRCode(true)
             setShareStatus('')
         } catch (error) {
-            console.log('QR Code error:', error)
-            if (error.message === 'Share too large') {
-                setShareStatus('Listen zu groß für QR-Code - bitte einzelne Liste verwenden')
-            } else if (error.message === 'QR code service unavailable') {
-                setShareStatus('QR-Code Service nicht verfügbar - bitte Link-Option verwenden')
-            } else {
-                setShareStatus(`QR-Code Fehler: ${error.message}`)
-            }
-            setTimeout(() => setShareStatus(''), 5000)
+            handleQRError(error)
         } finally {
             setIsGeneratingQR(false)
         }

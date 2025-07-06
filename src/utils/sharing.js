@@ -115,16 +115,18 @@ export const generateQRCode = async (listData) => {
 
 // Create compressed share data for large lists
 export const createCompressedShareData = (listData) => {
+  const { COMPRESSION_LIMITS } = VALIDATION_LIMITS
+  
   // For very large datasets, only include essential data
   if (listData.lists) {
     return {
       version: '1.0',
       exportDate: new Date().toISOString(),
       lists: listData.lists.map(list => ({
-        name: list.name.substring(0, 50), // Limit name length
-        items: list.items.slice(0, 20).map(item => ({ // Limit items count
-          name: item.name.substring(0, 30),
-          amount: item.amount.substring(0, 10)
+        name: list.name.substring(0, COMPRESSION_LIMITS.MAX_LIST_NAME_LENGTH),
+        items: list.items.slice(0, COMPRESSION_LIMITS.MAX_ITEMS_PER_LIST_COMPRESSED).map(item => ({
+          name: item.name.substring(0, COMPRESSION_LIMITS.MAX_ITEM_NAME_LENGTH),
+          amount: item.amount.substring(0, COMPRESSION_LIMITS.MAX_ITEM_AMOUNT_LENGTH)
         }))
       }))
     }
@@ -133,10 +135,10 @@ export const createCompressedShareData = (listData) => {
       version: '1.0',
       exportDate: new Date().toISOString(),
       list: {
-        name: listData.list.name.substring(0, 50),
-        items: listData.list.items.slice(0, 50).map(item => ({
-          name: item.name.substring(0, 30),
-          amount: item.amount.substring(0, 10)
+        name: listData.list.name.substring(0, COMPRESSION_LIMITS.MAX_LIST_NAME_LENGTH),
+        items: listData.list.items.slice(0, COMPRESSION_LIMITS.MAX_ITEMS_SINGLE_LIST_COMPRESSED).map(item => ({
+          name: item.name.substring(0, COMPRESSION_LIMITS.MAX_ITEM_NAME_LENGTH),
+          amount: item.amount.substring(0, COMPRESSION_LIMITS.MAX_ITEM_AMOUNT_LENGTH)
         }))
       }
     }

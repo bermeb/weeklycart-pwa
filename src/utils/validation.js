@@ -10,7 +10,15 @@ export const VALIDATION_LIMITS = {
   MAX_ITEMS_PER_LIST: 500,
   MAX_STRING_LENGTH: 1000,
   QR_CODE_SIZE: '200x200',
-  QR_URL_LIMIT: 2000 // Practical limit for QR codes
+  QR_URL_LIMIT: 2000, // Practical limit for QR codes
+  // Compression limits
+  COMPRESSION_LIMITS: {
+    MAX_LIST_NAME_LENGTH: 50,
+    MAX_ITEM_NAME_LENGTH: 30,
+    MAX_ITEM_AMOUNT_LENGTH: 10,
+    MAX_ITEMS_PER_LIST_COMPRESSED: 20,
+    MAX_ITEMS_SINGLE_LIST_COMPRESSED: 50
+  }
 }
 
 /**
@@ -39,7 +47,12 @@ export const validateInputLength = (input, maxLength = VALIDATION_LIMITS.MAX_STR
  */
 export const sanitizeString = (input, maxLength = VALIDATION_LIMITS.MAX_STRING_LENGTH) => {
   if (typeof input !== 'string') {
-    return ''
+    // Convert number to string if needed
+    if (typeof input === 'number') {
+      input = input.toString()
+    } else {
+      return ''
+    }
   }
   
   // Validate length first
@@ -167,16 +180,11 @@ export const validateImportData = (data) => {
         return { isValid: false, error: 'Invalid item name in list' }
       }
 
-      if (!item.amount || (typeof item.amount !== 'string' && typeof item.amount !== 'number')) {
+      if (!item.amount) {
         return { isValid: false, error: 'Invalid item amount in list' }
       }
-      
-      // Convert number to string if needed
-      if (typeof item.amount === 'number') {
-        item.amount = item.amount.toString()
-      }
 
-      // Sanitize strings
+      // Sanitize strings (sanitizeString now handles number conversion)
       item.name = sanitizeString(item.name, 200)
       item.amount = sanitizeString(item.amount, 50)
     }
