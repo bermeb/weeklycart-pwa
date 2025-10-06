@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Check, Trash2, ShoppingCart, Edit3, Save, X, ClipboardList, CheckCircle } from 'lucide-react'
+import { Check, Trash2, ShoppingCart, Edit3, Save, X, ClipboardList, CheckCircle, Zap } from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
 
 const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
@@ -103,7 +103,14 @@ const ShoppingListItem = ({ item, onToggle, onDelete, onEdit }) => {
                     className="item-text"
                     onClick={handleToggle}
                     style={{ cursor: 'pointer' }}>
-                    <span className="item-name">{item.name}</span>
+                    <span className="item-name">
+                        {item.name}
+                        {item.oneTime && (
+                            <span className="one-time-badge" title="Einmaliger Artikel">
+                                <Zap size={12} />
+                            </span>
+                        )}
+                    </span>
                     <span className="item-amount">{item.amount || '1 Stück'}</span>
                 </div>
             </div>

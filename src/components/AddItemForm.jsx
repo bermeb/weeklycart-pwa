@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Plus, ShoppingCart } from 'lucide-react'
+import { Plus, ShoppingCart, Zap } from 'lucide-react'
 import ErrorBoundary from './ErrorBoundary'
 
 const quickUnits = ['g', 'kg', 'L', 'ml', 'Stück', 'Pack']
@@ -7,15 +7,17 @@ const quickUnits = ['g', 'kg', 'L', 'ml', 'Stück', 'Pack']
 const AddItemForm = ({ onAddItem }) => {
     const [itemName, setItemName] = useState('')
     const [itemAmount, setItemAmount] = useState('')
+    const [oneTime, setOneTime] = useState(false)
     const nameInputRef = useRef(null)
     const amountInputRef = useRef(null)
 
     const handleSubmit = (e) => {
         e.preventDefault()
         if (itemName.trim()) {
-            onAddItem(itemName.trim(), itemAmount.trim() || '1 Stück')
+            onAddItem(itemName.trim(), itemAmount.trim() || '1 Stück', oneTime)
             setItemName('')
             setItemAmount('')
+            setOneTime(false)
             nameInputRef.current?.focus()
         }
     }
@@ -110,6 +112,19 @@ const AddItemForm = ({ onAddItem }) => {
                         {unit}
                     </button>
                 ))}
+            </div>
+
+            <div className="one-time-toggle">
+                <label className="one-time-label">
+                    <input
+                        type="checkbox"
+                        checked={oneTime}
+                        onChange={(e) => setOneTime(e.target.checked)}
+                        className="one-time-checkbox"
+                    />
+                    <Zap size={16} className="one-time-icon" />
+                    <span>Einmaliger Artikel (wird beim Reset gelöscht)</span>
+                </label>
             </div>
         </div>
     )

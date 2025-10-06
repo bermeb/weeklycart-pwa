@@ -528,6 +528,87 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+/* Day Checkboxes */
+.settings-row-column {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.day-checkboxes {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-top: var(--space-sm);
+  width: 100%;
+}
+
+.day-checkbox-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  cursor: pointer;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+  background: var(--bg-primary);
+  border: 2px solid var(--bg-gray);
+  min-width: 50px;
+  flex: 1;
+}
+
+.day-checkbox-label:hover {
+  background: var(--bg-tertiary);
+}
+
+.day-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary-blue);
+}
+
+.day-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.day-name {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.day-name.disabled {
+  color: var(--text-tertiary);
+}
+
+/* Time Input */
+.time-input {
+  padding: var(--space-md);
+  border: 1px solid var(--bg-gray-dark);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  background: var(--bg-primary);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  color: var(--text-primary);
+  min-width: 120px;
+}
+
+.time-input:disabled {
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+.time-input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
 /* Next Reset Card */
 .next-reset-card {
   display: flex;

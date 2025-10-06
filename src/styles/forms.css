@@ -100,6 +100,7 @@
   gap: var(--space-xs);
   align-items: center;
   flex-wrap: wrap;
+  margin-bottom: var(--space-sm);
 }
 
 .quick-units-label {
@@ -107,6 +108,37 @@
   color: var(--text-secondary);
   font-weight: 500;
   margin-right: var(--space-xs);
+}
+
+/* One-Time Toggle */
+.one-time-toggle {
+  margin-top: var(--space-xs);
+}
+
+.one-time-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  padding: var(--space-xs) 0;
+}
+
+.one-time-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--warning-orange);
+}
+
+.one-time-icon {
+  color: var(--warning-orange);
+  flex-shrink: 0;
+}
+
+.one-time-label span {
+  user-select: none;
 }
 
 .unit-btn {

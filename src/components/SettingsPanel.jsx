@@ -16,10 +16,12 @@ import {
 
 const SettingsPanel = ({
                            autoReset,
-                           resetDay,
+                           resetDays,
+                           resetTime,
                            weekDays,
                            onAutoResetChange,
-                           onResetDayChange,
+                           onResetDaysChange,
+                           onResetTimeChange,
                            onManualReset,
                            listsCount,
                            lists,
@@ -134,10 +136,12 @@ const SettingsPanel = ({
             
             <AutoResetSettings
                 autoReset={autoReset}
-                resetDay={resetDay}
+                resetDays={resetDays}
+                resetTime={resetTime}
                 weekDays={weekDays}
                 onAutoResetChange={onAutoResetChange}
-                onResetDayChange={onResetDayChange}
+                onResetDaysChange={onResetDaysChange}
+                onResetTimeChange={onResetTimeChange}
                 onManualReset={onManualReset}
                 listsCount={listsCount}
             />

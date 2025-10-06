@@ -8,7 +8,8 @@ export const exportListsToJSON = (lists) => {
       name: list.name,
       items: list.items.map(item => ({
         name: item.name,
-        amount: item.amount
+        amount: item.amount,
+        oneTime: item.oneTime || false
       }))
     }))
   }
@@ -26,9 +27,9 @@ export const exportListsToText = (lists) => {
   lists.forEach(list => {
     textContent += `${list.name}\n`
     textContent += `${'-'.repeat(list.name.length)}\n`
-    
+
     list.items.forEach(item => {
-      const status = item.completed ? '✓' : '○'
+      const status = item.checked ? '✓' : '○'
       textContent += `${status} ${item.name}`
       if (item.amount && item.amount !== '1 Stück') {
         textContent += ` (${item.amount})`
@@ -50,7 +51,8 @@ export const exportSingleListToJSON = (list) => {
       name: list.name,
       items: list.items.map(item => ({
         name: item.name,
-        amount: item.amount
+        amount: item.amount,
+        oneTime: item.oneTime || false
       }))
     }
   }
@@ -64,9 +66,9 @@ export const exportSingleListToText = (list) => {
   let textContent = `${list.name}\n`
   textContent += `${'-'.repeat(list.name.length)}\n`
   textContent += `Exported: ${new Date().toLocaleString()}\n\n`
-  
+
   list.items.forEach(item => {
-    const status = item.completed ? '✓' : '○'
+    const status = item.checked ? '✓' : '○'
     textContent += `${status} ${item.name}`
     if (item.amount && item.amount !== '1 Stück') {
       textContent += ` (${item.amount})`
@@ -127,8 +129,10 @@ export const processImportedData = (importedData, currentLists, mergeStrategy = 
       id: generateUniqueId(),
       name: item.name,
       amount: item.amount,
-      checked: false
-    }))
+      checked: false,
+      oneTime: item.oneTime || false // Preserve oneTime flag from imported data
+    })),
+    createdAt: new Date().toISOString()
   }))
   
   if (mergeStrategy === 'replace') {

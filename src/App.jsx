@@ -14,31 +14,31 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx"
 import { decodeListData } from "./utils/sharing.js"
 import { processImportedData } from "./utils/dataExport.js"
 import { checkStorageSpace } from "./utils/validation.js"
+import { DEFAULT_ITEMS, DEFAULT_RESET_DAYS, DEFAULT_RESET_TIME, WEEK_DAYS_DE } from "./constants/defaults.js"
 import './App.css'
-
-const defaultItems = [
-    { id: 1, name: 'Proteinmilch', amount: '1L', checked: false },
-    { id: 2, name: 'Eier', amount: '10 Stück', checked: false },
-    { id: 3, name: 'Putenbrustfilet', amount: '250g', checked: false }
-]
 
 const initialLists = [
     {
         id: 1,
         name: 'Wocheneinkauf',
-        items: [...defaultItems],
+        items: [...DEFAULT_ITEMS],
         createdAt: new Date().toISOString()
     }
 ]
-
-const weekDays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
 
 function App() {
     const [lists, setLists] = useLocalStorage('shoppingLists', initialLists)
     const [currentListId, setCurrentListId] = useLocalStorage('currentListId', 1)
     const [autoReset, setAutoReset] = useLocalStorage('autoReset', true)
-    const [resetDay, setResetDay] = useLocalStorage('resetDay', 5) // Samstag
-    const [lastResetDate, setLastResetDate] = useLocalStorage('lastResetDate', new Date().toDateString())
+
+    // Migration: Convert old resetDay (number) to new resetDays (array)
+    const [resetDayRaw] = useLocalStorage('resetDay', null)
+    const [resetDays, setResetDays] = useLocalStorage('resetDays',
+        resetDayRaw !== null && typeof resetDayRaw === 'number' ? [resetDayRaw] : DEFAULT_RESET_DAYS
+    )
+
+    const [resetTime, setResetTime] = useLocalStorage('resetTime', DEFAULT_RESET_TIME)
+    const [lastResetDate, setLastResetDate] = useLocalStorage('lastResetDate', new Date().toISOString())
     const [showSettings, setShowSettings] = useState(false)
     const [showListSelector, setShowListSelector] = useState(false)
     const [showShareModal, setShowShareModal] = useState(false)
@@ -46,7 +46,7 @@ function App() {
     const [importNotification, setImportNotification] = useState('')
 
     // Auto-Reset hook
-    useAutoReset(autoReset, resetDay, lastResetDate, () => {
+    useAutoReset(autoReset, resetDays, resetTime, lastResetDate, () => {
         resetAllLists()
     })
 
@@ -105,7 +105,7 @@ function App() {
     }
 
     // Add new item to current list
-    const addItem = (name, amount) => {
+    const addItem = (name, amount, oneTime = false) => {
         if (!name.trim()) return
 
         setLists(prev => prev.map(list =>
@@ -117,7 +117,7 @@ function App() {
                         name: name.trim(),
                         amount: amount.trim() || '1 Stück',
                         checked: false,
-                        permanent: false
+                        oneTime: oneTime
                     }]
                 }
                 : list
@@ -185,19 +185,25 @@ function App() {
             list.id === currentListId
                 ? {
                     ...list,
-                    items: list.items.map(item => ({ ...item, checked: false }))
+                    // Keep items that are NOT one-time (oneTime === true means delete it)
+                    items: list.items
+                        .filter(item => item.oneTime !== true)
+                        .map(item => ({ ...item, checked: false }))
                 }
                 : list
         ))
-        setLastResetDate(new Date().toDateString())
+        setLastResetDate(new Date().toISOString())
     }
 
     const resetAllLists = () => {
         setLists(prev => prev.map(list => ({
             ...list,
-            items: list.items.map(item => ({ ...item, checked: false }))
+            // Keep items that are NOT one-time (oneTime === true means delete it)
+            items: list.items
+                .filter(item => item.oneTime !== true)
+                .map(item => ({ ...item, checked: false }))
         })))
-        setLastResetDate(new Date().toDateString())
+        setLastResetDate(new Date().toISOString())
     }
 
     const handleImportLists = (importedLists) => {
@@ -267,10 +273,12 @@ function App() {
                     fallbackMessage="Die Einstellungen konnten nicht geladen werden.">
                     <SettingsPanel
                         autoReset={autoReset}
-                        resetDay={resetDay}
-                        weekDays={weekDays}
+                        resetDays={resetDays}
+                        resetTime={resetTime}
+                        weekDays={WEEK_DAYS_DE}
                         onAutoResetChange={setAutoReset}
-                        onResetDayChange={setResetDay}
+                        onResetDaysChange={setResetDays}
+                        onResetTimeChange={setResetTime}
                         onManualReset={resetAllLists}
                         listsCount={lists.length}
                         lists={lists}
@@ -340,13 +348,14 @@ function App() {
                 </div>
             )}
 
-            <ErrorBoundary 
-                componentName="InfoFooter" 
+            <ErrorBoundary
+                componentName="InfoFooter"
                 fallbackMessage="Die Fußzeile konnte nicht geladen werden.">
                 <InfoFooter
                     autoReset={autoReset}
-                    resetDay={resetDay}
-                    weekDays={weekDays}
+                    resetDays={resetDays}
+                    resetTime={resetTime}
+                    weekDays={WEEK_DAYS_DE}
                     listsCount={lists.length}
                     onResetCurrentList={resetCurrentList}
                 />
